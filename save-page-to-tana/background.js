@@ -104,6 +104,15 @@ function saveTrack({ title, artist, url }) {
           name: url
         }],
       },
+      {
+        /* Discogs */
+        type: 'field',
+        attributeId: 'SY7_uZ5wViRp',
+        children: [{
+          dataType: 'url',
+          name: `https://www.discogs.com/search/?${new URLSearchParams({ q: `${artist} ${title}` }).toString()}`,
+        }]
+      },
     ]
   }]
 
