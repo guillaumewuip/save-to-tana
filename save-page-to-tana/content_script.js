@@ -1,4 +1,14 @@
 (() => {
+  function parseJSONLD(content) {
+    try {
+      return JSON.parse(content)
+    } catch(error) {
+      // something we need to remove some excessive escaping
+      // specially on Youtube
+      return JSON.parse(content.replaceAll('\\', ''))
+    }
+  }
+
   function parseGeneric() {
     const pageUrl = window.location.href;
     const pageTitle = document.title;
@@ -21,7 +31,7 @@
       return { type: 'nothing' }
     }
 
-    const ldContent = JSON.parse(ldScript.textContent)
+    const ldContent = parseJSONLD(ldScript.textContent)
 
     if (ldContent['@type'] !== 'MusicRecording') {
       return { type: 'nothing' }
@@ -60,7 +70,7 @@
     }
 
     const lds = Array.from(document.querySelectorAll('script[type="application/ld+json"]'))
-      .map(element => JSON.parse(element.textContent.replaceAll('\\', '')))
+      .map(element => parseJSONLD(element.textContent))
       .filter(ld => ld['@type'] === 'VideoObject')
 
     if (!lds.length) {
@@ -128,8 +138,10 @@
       }
     }
   } catch (error) {
+    console.error(error)
     chrome.runtime.sendMessage({
       type: 'SAVE_ERROR',
+      error,
     });
   }
 })();

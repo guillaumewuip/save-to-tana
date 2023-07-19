@@ -28,12 +28,12 @@ function postNodes(nodes) {
         if (response.ok) {
           chrome.runtime.sendMessage({ type: 'PAGE_SAVED' });
         } else {
-          chrome.runtime.sendMessage({ type: 'SAVE_ERROR' });
+          chrome.runtime.sendMessage({ type: 'SAVE_ERROR', response });
         }
       })
       .catch((error) => {
-        console.error('Error:', error)
-        chrome.runtime.sendMessage({ type: 'SAVE_ERROR' });
+        console.error(error)
+        chrome.runtime.sendMessage({ type: 'SAVE_ERROR', error });
       });
   });
 }
