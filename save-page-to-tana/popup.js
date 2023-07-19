@@ -18,7 +18,7 @@ chrome.runtime.onMessage.addListener((message) => {
   if (message.type === "SAVE_ERROR") {
     document.getElementById("error").classList.remove('hidden');
     document.getElementById("loader").classList.add('hidden');
-    document.getElementById("error").classList.add('hidden');
+    document.getElementById("success").classList.add('hidden');
   }
 });
 
