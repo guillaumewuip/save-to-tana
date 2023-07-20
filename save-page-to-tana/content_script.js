@@ -97,11 +97,52 @@
     }
   }
 
+  function parseSoundcloud() {
+    if (!window.location.href.includes('soundcloud.com/')) {
+      return {
+        type: 'save_nothing',
+      }
+    }
+
+    return {
+      type: 'save_music',
+      url: window.location.href,
+      title: document.title,
+      artist: undefined,
+    }
+  }
+
+  function parseSpotify() {
+    if (window.location.href.includes('open.spotify.com/album')) {
+      return {
+        type: 'save_album',
+        url: window.location.href,
+        title: document.title,
+        artist: undefined,
+      }
+    }
+
+    if (window.location.href.includes('open.spotify.com')) {
+      return {
+        type: 'save_music',
+        url: window.location.href,
+        title: document.title,
+        artist: undefined,
+      }
+    }
+
+    return {
+      type: 'nothing'
+    }
+  }
+
   try {
     const parsers = [
       parseBandcamp,
       parseYoutubeMusic,
       parseYoutube,
+      parseSoundcloud,
+      parseSpotify,
       parseGeneric,
     ]
 
@@ -117,6 +158,26 @@
         case 'save_track': {
           chrome.runtime.sendMessage({
             type: 'saveTrack',
+            url: result.url,
+            title: result.title,
+            artist: result.artist,
+          });
+          return;
+        }
+
+        case 'save_album': {
+          chrome.runtime.sendMessage({
+            type: 'saveAlbum',
+            url: result.url,
+            title: result.title,
+            artist: result.artist,
+          });
+          return;
+        }
+
+        case 'save_music': {
+          chrome.runtime.sendMessage({
+            type: 'saveMusic',
             url: result.url,
             title: result.title,
             artist: result.artist,

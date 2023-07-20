@@ -89,30 +89,146 @@ function saveTrack({ title, artist, url }) {
         /* Title */
         type: 'field',
         attributeId: 'ksBOEhsvfu',
-        children: [{
+        children: title ? [{
           name: title,
-        }]
+        }] : []
       },
       {
         /* Artist */
         type: 'field',
         attributeId: 'eO2mvMPoRI',
-        children: [{
+        children: artist ? [{
           name: artist,
           supertags: [{
             /* Artist */
             id: 'JJfoxjPWqa'
           }]
-        }]
+        }] : []
       },
       {
         /* Source */
         type: 'field',
         attributeId: 'SalqarOgiv',
-        children: [{
+        children: url ? [{
           dataType: 'url',
           name: url
-        }],
+        }] : [],
+      },
+      {
+        /* Discogs */
+        type: 'field',
+        attributeId: 'SY7_uZ5wViRp',
+        children: [{
+          dataType: 'url',
+          name: `https://www.discogs.com/search/?${new URLSearchParams({ q: `${artist} ${title}` }).toString()}`,
+        }]
+      },
+    ]
+  }]
+
+  return postNodes(nodes)
+}
+
+function saveAlbum({ title, artist, url }) {
+  const nodes = [{
+    name: title,
+    supertags: [
+      {
+        /* Album */
+        id: 'eWlghv3V42SH',
+      },
+      {
+        /* inbox */
+        id: 'hNwXd-0aYDVj'
+      }
+    ],
+    children: [
+      {
+        /* Title */
+        type: 'field',
+        attributeId: 'ksBOEhsvfu',
+        children: title ? [{
+          name: title,
+        }] : []
+      },
+      {
+        /* Artist */
+        type: 'field',
+        attributeId: 'eO2mvMPoRI',
+        children: artist ? [{
+          name: artist,
+          supertags: [{
+            /* Artist */
+            id: 'JJfoxjPWqa'
+          }]
+        }] : []
+      },
+      {
+        /* Source */
+        type: 'field',
+        attributeId: 'SalqarOgiv',
+        children: url ? [{
+          dataType: 'url',
+          name: url
+        }] : [],
+      },
+      {
+        /* Discogs */
+        type: 'field',
+        attributeId: 'SY7_uZ5wViRp',
+        children: [{
+          dataType: 'url',
+          name: `https://www.discogs.com/search/?${new URLSearchParams({ q: `${artist} ${title}` }).toString()}`,
+        }]
+      },
+    ]
+  }]
+
+  return postNodes(nodes)
+}
+
+function saveMusic({ title, artist, url }) {
+  const nodes = [{
+    name: title,
+    supertags: [
+      {
+        /* Music */
+        id: 'VI7FwJEpFAqY',
+      },
+      {
+        /* inbox */
+        id: 'hNwXd-0aYDVj'
+      }
+    ],
+    children: [
+      {
+        /* Title */
+        type: 'field',
+        attributeId: 'ksBOEhsvfu',
+        children: title ? [{
+          name: title,
+        }] : []
+      },
+      {
+        /* Artist */
+        type: 'field',
+        attributeId: 'eO2mvMPoRI',
+        children: artist ? [{
+          name: artist,
+          supertags: [{
+            /* Artist */
+            id: 'JJfoxjPWqa'
+          }]
+        }] : []
+      },
+      {
+        /* Source */
+        type: 'field',
+        attributeId: 'SalqarOgiv',
+        children: url ? [{
+          dataType: 'url',
+          name: url
+        }] : [],
       },
       {
         /* Discogs */
@@ -132,31 +248,54 @@ function saveTrack({ title, artist, url }) {
 chrome.runtime.onMessage.addListener((message) => {
   console.log({ message })
 
-  if (message.type === 'popupOpened') {
-    chrome.tabs.query({ active: true, currentWindow: true }, function(tabs) {
-      const activeTab = tabs[0];
+  switch (message.type) {
+    case 'popupOpened': {
+      chrome.tabs.query({ active: true, currentWindow: true }, function(tabs) {
+        const activeTab = tabs[0];
 
-      chrome.scripting
-        .executeScript({
-          target : {tabId : activeTab.id},
-          files : [ "content_script.js" ],
-        })
-    });
-  }
+        chrome.scripting
+          .executeScript({
+            target : {tabId : activeTab.id},
+            files : [ "content_script.js" ],
+          })
+      });
+      return
+    }
 
-  if (message.type === 'saveTrack') {
-    saveTrack({
-      url: message.url,
-      title: message.title,
-      artist: message.artist,
-    })
-  }
+    case 'saveTrack': {
+      saveTrack({
+        url: message.url,
+        title: message.title,
+        artist: message.artist,
+      })
+      return
+    }
 
-  if (message.type === 'savePage') {
-    savePage({
-      title: message.title,
-      url: message.url,
-    })
+    case 'saveAlbum': {
+      saveMusic({
+        url: message.url,
+        title: message.title,
+        artist: message.artist,
+      })
+      return
+    }
+
+    case 'saveMusic': {
+      saveMusic({
+        url: message.url,
+        title: message.title,
+        artist: message.artist,
+      })
+      return
+    }
+
+    case 'savePage': {
+      savePage({
+        title: message.title,
+        url: message.url,
+      })
+      return
+    }
   }
 });
 
