@@ -46,6 +46,10 @@ function savePage({ title, url }) {
         {
           /* website */
           id: 'G3E1S3l-dk0v'
+        },
+        {
+          /* inbox */
+          id: 'hNwXd-0aYDVj'
         }
       ],
       children: [
@@ -70,10 +74,16 @@ function savePage({ title, url }) {
 function saveTrack({ title, artist, url }) {
   const nodes = [{
     name: title,
-    supertags: [{
-      /* Track */
-      id: 'xensjMe1ew'
-    }],
+    supertags: [
+      {
+        /* Track */
+        id: 'xensjMe1ew'
+      },
+      {
+        /* inbox */
+        id: 'hNwXd-0aYDVj'
+      }
+    ],
     children: [
       {
         /* Title */
