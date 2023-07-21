@@ -8,7 +8,7 @@ const Tana = require('./tana');
 const parser = new RSSParser();
 
 const schedules = {
-  twiceAtNight: '0 0 23,6 * * *', // 23:00 and 06:00 every day
+  twiceAtNight: '0 0 23,4 * * *', // 23:00 and 04:00 every day
   everyHour: '0 0 * * * *', // every hour every day
 }
 
