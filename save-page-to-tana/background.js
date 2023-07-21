@@ -56,7 +56,7 @@ function savePage({ title, url }) {
         {
           /* URL */
           type: 'field',
-          attributeId: 'SYS_A78',
+          attributeId: 'S4UUISQkxn2X',
           children: [
             {
               dataType: 'url',
@@ -108,9 +108,9 @@ function saveMusicRelatedItem(supertag) {
           }] : []
         },
         {
-          /* Source */
+          /* URL */
           type: 'field',
-          attributeId: 'SalqarOgiv',
+          attributeId: 'S4UUISQkxn2X',
           children: url ? [{
             dataType: 'url',
             name: url
