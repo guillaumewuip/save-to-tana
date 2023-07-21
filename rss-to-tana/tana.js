@@ -1,4 +1,44 @@
-function album(item) {
+function source(feedUrl) {
+  return {
+    /* Source */
+    type: "field",
+    attributeId: "SalqarOgiv",
+    children: [
+      {
+        name: `RSS to Tana - ${feedUrl}`
+      }
+    ]
+  }
+}
+
+function title(item) {
+  return {
+    /* Title */
+    type: 'field',
+    attributeId: 'ksBOEhsvfu',
+    children: [
+      {
+        name: item.title,
+      }
+    ]
+  }
+}
+
+function url(item) {
+  return {
+    /* URL */
+    type: 'field',
+    attributeId: 'S4UUISQkxn2X',
+    children: [
+      {
+        dataType: 'url',
+        name: item.link
+      }
+    ]
+  }
+}
+
+function album(feedUrl, item) {
   return {
     name: item.title,
     supertags: [
@@ -8,31 +48,31 @@ function album(item) {
       },
     ],
     children: [
-      {
-        /* Title */
-        type: 'field',
-        attributeId: 'ksBOEhsvfu',
-        children: [
-          {
-            name: item.title,
-          }
-        ]
-      },
-      {
-        /* Source */
-        type: 'field',
-        attributeId: 'SalqarOgiv',
-        children: [
-          {
-            name: item.link
-          }
-        ]
-      }
+      title(item),
+      url(item),
+      source(feedUrl)
     ]
   }
 }
 
-function website(item) {
+function music(feedUrl, item) {
+  return {
+    name: item.title,
+    supertags: [
+      {
+        /* Music */
+        id: 'VI7FwJEpFAqY'
+      },
+    ],
+    children: [
+      title(item),
+      url(item),
+      source(feedUrl)
+    ]
+  }
+}
+
+function website(feedUrl, item) {
   return {
     name: item.title,
     supertags: [
@@ -42,22 +82,14 @@ function website(item) {
       }
     ],
     children: [
-      {
-        /* URL */
-        type: 'field',
-        attributeId: 'S4UUISQkxn2X',
-        children: [
-          {
-            dataType: 'url',
-            name: item.link
-          }
-        ]
-      },
+      url(item),
+      source(feedUrl)
     ]
   }
 }
 
 module.exports = {
   album,
+  music,
   website,
 }

@@ -7,18 +7,88 @@ const Tana = require('./tana');
 
 const parser = new RSSParser();
 
+const schedules = {
+  twiceAtNight: '0 0 23,6 * * *', // 23:00 and 06:00 every day
+  everyHour: '0 0 * * * *', // every hour every day
+}
+
 const rssFeeds = [
+  // Music
   {
     url: 'https://lesoreillescurieuses.com/feed/',
-    cron: '0 0 23,6 * * *', // 23:00 and 06:00 every day
+    cron: schedules.twiceAtNight,
     toTana: Tana.album,
   },
   {
     url: 'https://cmd.wuips.com/rss/feed.xml',
-    cron: '0 0 * * * *', // every hour every day
+    cron: schedules.everyHour,
+    toTana: Tana.music,
+  },
+  {
+    url: 'http://pitchfork.com/rss/reviews/best/albums/',
+    cron: schedules.twiceAtNight,
+    toTana: Tana.album,
+  },
+  {
+    url: 'https://www.prun.net/emission/8MNV-iss/rss',
+    cron: schedules.twiceAtNight,
+    toTana: Tana.music,
+  },
+  {
+    url: 'https://stnt.org/rss.xml',
+    cron: schedules.twiceAtNight,
+    toTana: Tana.album,
+  },
+  {
+    url: 'https://www.tsugi.fr/feed/',
+    cron: schedules.twiceAtNight,
+    toTana: Tana.album,
+  },
+
+  // Tech
+  {
+    // Codrops
+    url: 'http://feeds2.feedburner.com/tympanus',
+    cron: schedules.everyHour,
+    toTana: Tana.website,
+  },
+  {
+    url: 'https://leaddev.com/content-piece-and-series/rss.xml',
+    cron: schedules.everyHour,
+    toTana: Tana.website,
+  },
+  {
+    // Thoughtworks Technology Podcast
+    url: 'http://feeds.soundcloud.com/users/soundcloud:users:94605026/sounds.rss',
+    cron: schedules.everyHour,
     toTana: Tana.website,
   },
 
+  // Design
+  {
+    url: 'http://minimalissimo.com/feed/',
+    cron: schedules.twiceAtNight,
+    toTana: Tana.website,
+  },
+
+  // Personal Development
+  {
+    url: 'http://feeds.feedburner.com/zenhabits',
+    cron: schedules.twiceAtNight,
+    toTana: Tana.website,
+  },
+
+  // Others
+  {
+    url: 'http://www.lesothers.com/feed/',
+    cron: schedules.twiceAtNight,
+    toTana: Tana.website,
+  },
+  {
+    url: 'https://worksinprogress.substack.com/feed/',
+    cron: schedules.twiceAtNight,
+    toTana: Tana.website,
+  }
 ];
 
 function parseFeed(feed) {
@@ -32,7 +102,7 @@ function parseFeed(feed) {
         if (pubDate > lastRunDate) {
           console.log(feed.url, `new ${item.title} detected`);
 
-          const tanaNode = feed.toTana(item)
+          const tanaNode = feed.toTana(feed.url, item)
           saveItem(tanaNode);
         }
       }
