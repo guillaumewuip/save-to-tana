@@ -64,6 +64,16 @@ function savePage({ title, url }) {
             }
           ]
         },
+        /* Source */
+        {
+          type: "field",
+          attributeId: "SalqarOgiv",
+          children: [
+            {
+              name: "Save To Tana browser extension"
+            }
+          ]
+        },
       ]
     }
   ]
@@ -124,6 +134,16 @@ function saveMusicRelatedItem(supertag) {
             dataType: 'url',
             name: `https://www.discogs.com/search/?${new URLSearchParams({ q: `${artist} ${title}` }).toString()}`,
           }]
+        },
+        /* Source */
+        {
+          type: "field",
+          attributeId: "SalqarOgiv",
+          children: [
+            {
+              name: "Save To Tana browser extension"
+            }
+          ]
         },
       ]
     }]
