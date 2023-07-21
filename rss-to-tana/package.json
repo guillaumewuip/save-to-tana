@@ -1,0 +1,12 @@
+{
+  "name": "rss-to-tana",
+  "main": "index.js",
+  "dependencies": {
+    "node-cron": "^3.0.2",
+    "rss-parser": "^3.9.0"
+  },
+  "scripts": {
+    "start": "node index.js"
+  },
+  "private": true
+}
