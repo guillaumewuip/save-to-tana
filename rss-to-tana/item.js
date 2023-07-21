@@ -1,25 +1,26 @@
-function handleNewRSSItem(feedURL, item, node) {
-  console.log(feedURL, `new ${item.title} detected`);
+const API_KEY = process.env.TANA_API_KEY
 
+function postNodes(nodes) {
+  // Sending all given nodes at once as we think we won't have more than 100
+  // nodes here
+  // @see https://github.com/tanainc/tana-input-api-samples
+  //
+  // We're also adding the #inbox super tag on all node
   const payload = {
     targetNodeId: 'INBOX',
-    nodes: [
-      {
-        ...node,
-        supertags: [
-          ...node.supertags,
-          {
-            /* inbox */
-            id: 'hNwXd-0aYDVj'
-          }
-        ]
-      }
-    ]
+    nodes: nodes.map(node => ({
+      ...node,
+      supertags: [
+        ...node.supertags,
+        {
+          /* inbox */
+          id: 'hNwXd-0aYDVj'
+        }
+      ]
+    }))
   };
 
-  const API_KEY = process.env.TANA_API_KEY
-
-  fetch('https://europe-west1-tagr-prod.cloudfunctions.net/addToNodeV2', {
+  return fetch('https://europe-west1-tagr-prod.cloudfunctions.net/addToNodeV2', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -28,15 +29,39 @@ function handleNewRSSItem(feedURL, item, node) {
     body: JSON.stringify(payload)
   })
   .then(response => {
-    if (response.ok) {
-      console.log(feedURL, `${item.title} saved`);
-    } else {
-      console.error(feedURL, `error saving ${item.title} item: ${response.status} ${response.statusText}`);
+    if (!response.ok) {
+      throw new Error(`Error saving nodes: ${response.status} ${response.statusText}`)
     }
   })
-  .catch(error => {
-    console.error(feedURL, 'error making HTTP POST request', error);
-  });
 }
 
-module.exports = { handleNewRSSItem };
+const queue = []
+
+// every 20s, we post the queue
+setInterval(
+  () => {
+    if (queue.length) {
+      console.log(`Posting ${queue.length} items to Tana`)
+
+      // extracting all items from the queue
+      const nodes = queue.splice(0, Infinity)
+
+      postNodes(nodes)
+        .then(() => {
+          console.log(`${nodes.length} nodes saved`);
+        })
+        // in case of failure, we put back items in the queue
+        .catch(error => {
+          console.error(error);
+          queue.push(...nodes)
+        });
+    }
+  },
+  20 * 1000
+)
+
+function saveItem(node) {
+  queue.push(node)
+}
+
+module.exports = { saveItem };

@@ -1,0 +1,16 @@
+# fly.toml app configuration file generated for rss-to-tana on 2023-07-21T12:04:26+02:00
+#
+# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
+#
+
+app = "rss-to-tana"
+primary_region = "cdg"
+
+[build]
+  builder = "heroku/buildpacks:20"
+
+[env]
+  NODE_ENV = "production"
+
+[processes]
+  rss = "npm start"

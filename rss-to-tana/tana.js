@@ -1,6 +1,6 @@
 function album(item) {
   return {
-    name: '',
+    name: item.title,
     supertags: [
       {
         /* Album */
@@ -14,7 +14,7 @@ function album(item) {
         attributeId: 'ksBOEhsvfu',
         children: [
           {
-            name: item.title
+            name: item.title,
           }
         ]
       },
@@ -24,7 +24,7 @@ function album(item) {
         attributeId: 'SalqarOgiv',
         children: [
           {
-            name: item.url
+            name: item.link
           }
         ]
       }
@@ -45,11 +45,11 @@ function website(item) {
       {
         /* URL */
         type: 'field',
-        attributeId: 'SYS_A78',
+        attributeId: 'S4UUISQkxn2X',
         children: [
           {
             dataType: 'url',
-            name: item.url
+            name: item.link
           }
         ]
       },
