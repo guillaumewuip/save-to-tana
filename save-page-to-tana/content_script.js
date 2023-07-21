@@ -33,23 +33,39 @@
 
     const ldContent = parseJSONLD(ldScript.textContent)
 
-    if (ldContent['@type'] !== 'MusicRecording') {
-      return { type: 'nothing' }
+    if (ldContent['@type'] === 'MusicRecording') {
+      // not using ldContent to use the reald xxx.bandcamp.com url
+      const url = document.querySelector('meta[property="og:url"]')?.getAttribute('content')
+
+      if (!url) {
+        return{ type: 'nothing' }
+      }
+
+      return {
+        type: 'save_track',
+        url: url,
+        title: ldContent.name,
+        artist: ldContent.byArtist.name,
+      }
     }
 
-    // not using ldContent to use the reald xxx.bandcamp.com url
-    const url = document.querySelector('meta[property="og:url"]')?.getAttribute('content')
+    if (ldContent['@type'] === 'MusicAlbum') {
+      // not using ldContent to use the reald xxx.bandcamp.com url
+      const url = document.querySelector('meta[property="og:url"]')?.getAttribute('content')
 
-    if (!url) {
-      return{ type: 'nothing' }
+      if (!url) {
+        return{ type: 'nothing' }
+      }
+
+      return {
+        type: 'save_album',
+        url: url,
+        title: ldContent.name,
+        artist: ldContent.byArtist.name,
+      }
     }
 
-    return {
-      type: 'save_track',
-      url: url,
-      title: ldContent.name,
-      artist: ldContent.byArtist.name,
-    }
+    return { type: 'nothing' }
   }
 
   function parseYoutubeMusic() {

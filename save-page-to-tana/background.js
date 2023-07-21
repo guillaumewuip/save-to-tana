@@ -71,178 +71,77 @@ function savePage({ title, url }) {
   return postNodes(nodes)
 }
 
-function saveTrack({ title, artist, url }) {
-  const nodes = [{
-    name: title,
-    supertags: [
-      {
-        /* Track */
-        id: 'xensjMe1ew'
-      },
-      {
-        /* inbox */
-        id: 'hNwXd-0aYDVj'
-      }
-    ],
-    children: [
-      {
-        /* Title */
-        type: 'field',
-        attributeId: 'ksBOEhsvfu',
-        children: title ? [{
-          name: title,
-        }] : []
-      },
-      {
-        /* Artist */
-        type: 'field',
-        attributeId: 'eO2mvMPoRI',
-        children: artist ? [{
-          name: artist,
-          supertags: [{
-            /* Artist */
-            id: 'JJfoxjPWqa'
-          }]
-        }] : []
-      },
-      {
-        /* Source */
-        type: 'field',
-        attributeId: 'SalqarOgiv',
-        children: url ? [{
-          dataType: 'url',
-          name: url
-        }] : [],
-      },
-      {
-        /* Discogs */
-        type: 'field',
-        attributeId: 'SY7_uZ5wViRp',
-        children: [{
-          dataType: 'url',
-          name: `https://www.discogs.com/search/?${new URLSearchParams({ q: `${artist} ${title}` }).toString()}`,
-        }]
-      },
-    ]
-  }]
 
-  return postNodes(nodes)
+function saveMusicRelatedItem(supertag) {
+  return function ({ title, artist, url }) {
+    const nodes = [{
+      name: title,
+      supertags: [
+        {
+          /* Track */
+          id: supertag
+        },
+        {
+          /* inbox */
+          id: 'hNwXd-0aYDVj'
+        }
+      ],
+      children: [
+        {
+          /* Title */
+          type: 'field',
+          attributeId: 'ksBOEhsvfu',
+          children: title ? [{
+            name: title,
+          }] : []
+        },
+        {
+          /* Artist */
+          type: 'field',
+          attributeId: 'eO2mvMPoRI',
+          children: artist ? [{
+            name: artist,
+            supertags: [{
+              /* Artist */
+              id: 'JJfoxjPWqa'
+            }]
+          }] : []
+        },
+        {
+          /* Source */
+          type: 'field',
+          attributeId: 'SalqarOgiv',
+          children: url ? [{
+            dataType: 'url',
+            name: url
+          }] : [],
+        },
+        {
+          /* Discogs */
+          type: 'field',
+          attributeId: 'SY7_uZ5wViRp',
+          children: [{
+            dataType: 'url',
+            name: `https://www.discogs.com/search/?${new URLSearchParams({ q: `${artist} ${title}` }).toString()}`,
+          }]
+        },
+      ]
+    }]
+
+    return postNodes(nodes)
+  }
 }
 
-function saveAlbum({ title, artist, url }) {
-  const nodes = [{
-    name: title,
-    supertags: [
-      {
-        /* Album */
-        id: 'eWlghv3V42SH',
-      },
-      {
-        /* inbox */
-        id: 'hNwXd-0aYDVj'
-      }
-    ],
-    children: [
-      {
-        /* Title */
-        type: 'field',
-        attributeId: 'ksBOEhsvfu',
-        children: title ? [{
-          name: title,
-        }] : []
-      },
-      {
-        /* Artist */
-        type: 'field',
-        attributeId: 'eO2mvMPoRI',
-        children: artist ? [{
-          name: artist,
-          supertags: [{
-            /* Artist */
-            id: 'JJfoxjPWqa'
-          }]
-        }] : []
-      },
-      {
-        /* Source */
-        type: 'field',
-        attributeId: 'SalqarOgiv',
-        children: url ? [{
-          dataType: 'url',
-          name: url
-        }] : [],
-      },
-      {
-        /* Discogs */
-        type: 'field',
-        attributeId: 'SY7_uZ5wViRp',
-        children: [{
-          dataType: 'url',
-          name: `https://www.discogs.com/search/?${new URLSearchParams({ q: `${artist} ${title}` }).toString()}`,
-        }]
-      },
-    ]
-  }]
-
-  return postNodes(nodes)
+function saveTrack(data) {
+  return saveMusicRelatedItem('xensjMe1ew')(data)
 }
 
-function saveMusic({ title, artist, url }) {
-  const nodes = [{
-    name: title,
-    supertags: [
-      {
-        /* Music */
-        id: 'VI7FwJEpFAqY',
-      },
-      {
-        /* inbox */
-        id: 'hNwXd-0aYDVj'
-      }
-    ],
-    children: [
-      {
-        /* Title */
-        type: 'field',
-        attributeId: 'ksBOEhsvfu',
-        children: title ? [{
-          name: title,
-        }] : []
-      },
-      {
-        /* Artist */
-        type: 'field',
-        attributeId: 'eO2mvMPoRI',
-        children: artist ? [{
-          name: artist,
-          supertags: [{
-            /* Artist */
-            id: 'JJfoxjPWqa'
-          }]
-        }] : []
-      },
-      {
-        /* Source */
-        type: 'field',
-        attributeId: 'SalqarOgiv',
-        children: url ? [{
-          dataType: 'url',
-          name: url
-        }] : [],
-      },
-      {
-        /* Discogs */
-        type: 'field',
-        attributeId: 'SY7_uZ5wViRp',
-        children: [{
-          dataType: 'url',
-          name: `https://www.discogs.com/search/?${new URLSearchParams({ q: `${artist} ${title}` }).toString()}`,
-        }]
-      },
-    ]
-  }]
+function saveAlbum(data) {
+  return saveMusicRelatedItem('eWlghv3V42SH')(data)
+}
 
-  return postNodes(nodes)
+function saveMusic(data) {
+  return saveMusicRelatedItem('VI7FwJEpFAqY')(data)
 }
 
 chrome.runtime.onMessage.addListener((message) => {
@@ -272,7 +171,7 @@ chrome.runtime.onMessage.addListener((message) => {
     }
 
     case 'saveAlbum': {
-      saveMusic({
+      saveAlbum({
         url: message.url,
         title: message.title,
         artist: message.artist,
