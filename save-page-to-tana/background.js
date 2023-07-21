@@ -64,8 +64,8 @@ function savePage({ title, url }) {
             }
           ]
         },
-        /* Source */
         {
+          /* Source */
           type: "field",
           attributeId: "SalqarOgiv",
           children: [
@@ -135,8 +135,8 @@ function saveMusicRelatedItem(supertag) {
             name: `https://www.discogs.com/search/?${new URLSearchParams({ q: `${artist} ${title}` }).toString()}`,
           }]
         },
-        /* Source */
         {
+          /* Source */
           type: "field",
           attributeId: "SalqarOgiv",
           children: [
