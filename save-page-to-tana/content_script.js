@@ -103,6 +103,7 @@
       .replace(new RegExp(`${artist}\\s[-–]\\s`), '')
       .replace(new RegExp(`\\s[-–]\\s${artist}`), '')
       .replace(/\s?\(Official Video\)/, '')
+      .replace(/\s?\(Video Lyric\)/, '')
       .trim()
 
     return {
