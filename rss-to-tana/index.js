@@ -98,8 +98,8 @@ function parseFeed(feed) {
       const parsedFeed = await parser.parseURL(feed.url);
 
       for (const item of parsedFeed.items) {
-        const pubDate = new Date(item.pubDate);
-        if (pubDate > lastRunDate) {
+        const publishedAt = new Date(item.isoDate);
+        if (publishedAt > lastRunDate) {
           console.log(feed.url, `new ${item.title} detected`);
 
           const tanaNode = feed.toTana(feed.url, item)
