@@ -1,67 +1,107 @@
-const API_KEY = process.env.TANA_API_KEY
-
-function postNodes(nodes) {
-  // Sending all given nodes at once as we think we won't have more than 100
-  // nodes here
-  // @see https://github.com/tanainc/tana-input-api-samples
-  //
-  // We're also adding the #inbox super tag on all node
-  const payload = {
-    targetNodeId: 'INBOX',
-    nodes: nodes.map(node => ({
-      ...node,
-      supertags: [
-        ...node.supertags,
-        {
-          /* inbox */
-          id: 'hNwXd-0aYDVj'
-        }
-      ]
-    }))
-  };
-
-  return fetch('https://europe-west1-tagr-prod.cloudfunctions.net/addToNodeV2', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${API_KEY}`
-    },
-    body: JSON.stringify(payload)
-  })
-  .then(response => {
-    if (!response.ok) {
-      throw new Error(`Error saving nodes: ${response.status} ${response.statusText}`)
-    }
-  })
+function source(feedUrl) {
+  return {
+    /* Source */
+    type: "field",
+    attributeId: "SalqarOgiv",
+    children: [
+      {
+        name: `RSS to Tana - ${feedUrl}`
+      }
+    ]
+  }
 }
 
-const queue = []
+function title(item) {
+  return {
+    /* Title */
+    type: 'field',
+    attributeId: 'ksBOEhsvfu',
+    children: [
+      {
+        name: item.title,
+      }
+    ]
+  }
+}
 
-// every 20s, we post the queue
-setInterval(
-  () => {
-    if (queue.length) {
-      console.log(`Posting ${queue.length} items to Tana`)
+function url(item) {
+  return {
+    /* URL */
+    type: 'field',
+    attributeId: 'S4UUISQkxn2X',
+    children: [
+      {
+        dataType: 'url',
+        name: item.link
+      }
+    ]
+  }
+}
 
-      // extracting all items from the queue
-      const nodes = queue.splice(0, Infinity)
+function album(feedUrl, item) {
+  return {
+    name: item.title,
+    supertags: [
+      {
+        /* Album */
+        id: 'eWlghv3V42SH'
+      },
+    ],
+    children: [
+      title(item),
+      url(item),
+      source(feedUrl)
+    ]
+  }
+}
 
-      postNodes(nodes)
-        .then(() => {
-          console.log(`${nodes.length} nodes saved`);
-        })
-        // in case of failure, we put back items in the queue
-        .catch(error => {
-          console.error(error);
-          queue.push(...nodes)
-        });
-    }
+function music(feedUrl, item) {
+  return {
+    name: item.title,
+    supertags: [
+      {
+        /* Music */
+        id: 'VI7FwJEpFAqY'
+      },
+    ],
+    children: [
+      title(item),
+      url(item),
+      source(feedUrl)
+    ]
+  }
+}
+
+function website(feedUrl, item) {
+  return {
+    name: item.title,
+    supertags: [
+      {
+        /* Website */
+        id: 'G3E1S3l-dk0v'
+      }
+    ],
+    children: [
+      url(item),
+      source(feedUrl)
+    ]
+  }
+}
+
+const create = (rssItem, feed) => ({
+  id: rssItem.link,
+  title: rssItem.title,
+  publishedAt: new Date(rssItem.isoDate),
+  tanaNode: feed.toTana(feed.url, rssItem),
+  feed,
+})
+
+
+module.exports = {
+  tana: {
+    album,
+    music,
+    website,
   },
-  20 * 1000
-)
-
-function saveItem(node) {
-  queue.push(node)
+  create,
 }
-
-module.exports = { saveItem };

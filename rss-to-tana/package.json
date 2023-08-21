@@ -3,6 +3,7 @@
   "main": "index.js",
   "dependencies": {
     "node-cron": "^3.0.2",
+    "redis": "^4.6.7",
     "rss-parser": "^3.9.0"
   },
   "scripts": {
