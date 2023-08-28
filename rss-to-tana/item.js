@@ -91,7 +91,7 @@ function website(feedUrl, item) {
 const create = (rssItem, feed) => ({
   id: rssItem.link,
   title: rssItem.title,
-  publishedAt: new Date(rssItem.isoDate),
+  publishedAt: rssItem.publishedAt,
   tanaNode: feed.toTana(feed.url, rssItem),
   feed,
 })

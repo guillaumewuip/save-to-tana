@@ -1,16 +1,9 @@
-const RSSParser = require('rss-parser');
 const cron = require('node-cron');
 
 const Store = require('./store');
 const Item = require('./item');
 const Tana = require('./tana');
-
-const parser = new RSSParser({
-  defaultRSS: 2.0,
-  xml2js: {
-    strict: true,
-  }
-});
+const RSS = require('./rss');
 
 const schedules = {
   twiceAtNight: '0 0 23,4 * * *', // 23:00 and 04:00 every day
@@ -108,9 +101,9 @@ function dateDiffInDays(a, b) {
 async function extractItems(feed) {
   console.log(feed.url, '- parsing')
   try {
-    const parsedFeed = await parser.parseURL(feed.url);
+    const items = await RSS.parse(feed.url);
 
-    return parsedFeed.items.map(rssItem => Item.create(rssItem, feed))
+    return items.map(rssItem => Item.create(rssItem, feed))
   } catch (error) {
     console.error(feed.url, `parsing error`, error);
 
