@@ -33,7 +33,7 @@ function postItems(items) {
     body: JSON.stringify(payload)
   })
   .then(response => {
-    if (!response.ok) {
+    if (!response.ok || response.status !== 200) {
       throw new Error(`Error saving nodes: ${response.status} ${response.statusText}`)
     }
   })
