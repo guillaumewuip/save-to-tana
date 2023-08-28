@@ -9,7 +9,7 @@ const client = createClient({
 client.on('error', error => console.error('Redis Client Error', error));
 
 // change the prefix to trash all existing ids
-const toStoreId = (id) => `1-${id}`
+const storeId = (id) => `1-${id}`
 
 const initialize = async () => {
   console.log('Connecting to Redis', REDIS_URL)
@@ -18,13 +18,13 @@ const initialize = async () => {
 }
 
 const savedAlready = async (itemId) => {
-  const nbKeysFound = await client.exists(toStoreId(itemId))
+  const nbKeysFound = await client.exists(storeId(itemId))
   return nbKeysFound === 1
 }
 
 const saveItemSaved = async (itemId) => {
   await client.set(
-    toStoreId(itemId),
+    storeId(itemId),
     0,
     {
       EX: 345600, // 4 days in seconds
