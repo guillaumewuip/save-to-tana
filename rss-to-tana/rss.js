@@ -14,7 +14,6 @@ async function parse(feedUrl) {
   const content = await response.text()
 
   const feed = htmlparser2.parseFeed(content);
-
   const items = feed.items || []
 
   try {
