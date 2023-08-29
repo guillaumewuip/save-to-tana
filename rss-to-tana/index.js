@@ -4,6 +4,7 @@ const Store = require('./store');
 const Item = require('./item');
 const Tana = require('./tana');
 const RSS = require('./rss');
+const Log = require('./log');
 
 const schedules = {
   twiceAtNight: '0 0 23,4 * * *', // 23:00 and 04:00 every day
@@ -99,13 +100,13 @@ function dateDiffInDays(a, b) {
 }
 
 async function extractItems(feed) {
-  console.log(feed.url, '- parsing')
+  Log.debug(feed.url, '- parsing')
   try {
     const items = await RSS.parse(feed.url);
 
     return items.map(rssItem => Item.create(rssItem, feed))
   } catch (error) {
-    console.error(feed.url, `parsing error`, error);
+    Log.error(feed.url, `parsing error`, error);
 
     return []
   }
@@ -133,15 +134,33 @@ async function filterSavedItems(items) {
 
 async function parseFeed(feed) {
   const items = await extractItems(feed)
-  console.log(feed.url, `- ${items.length} items in feed`)
+  Log.debug(feed.url, `- ${items.length} items in feed`)
 
   const notOldItems = await filterOlderItems(items)
-  console.log(feed.url, `- ${notOldItems.length} items young enough`)
+  Log.debug(feed.url, `- ${notOldItems.length} items young enough`)
 
   const notAlreadySaved = await filterSavedItems(notOldItems)
-  console.log(feed.url, `- ${notAlreadySaved.length} new items`)
+  Log.info(feed.url, `- ${notAlreadySaved.length} new items`)
 
   Tana.saveItems(notAlreadySaved);
+}
+
+async function parseFeeds() {
+  for (const feed of rssFeeds) {
+      await parseFeed(feed)
+  }
+}
+
+async function scheduleFeeds() {
+  for (const feed of rssFeeds) {
+    Log.info('Scheduling', feed.url, 'on', feed.cron)
+
+    if (!cron.validate(feed.cron)) {
+      throw new Error(`${feed.cron} not a valid cron expression`)
+    }
+
+    cron.schedule(feed.cron, () => parseFeed(feed))
+  }
 }
 
 // 1. Parses feed to retrive their items
@@ -154,21 +173,7 @@ async function parseFeed(feed) {
 (async () => {
   await Store.initialize()
 
-  for (const feed of rssFeeds) {
-    /**
-     * We can use FORCE=true env var to run the feeds parsing directly, without
-     * cron schedule
-     */
-    if (process.env.FORCE === 'true') {
-      await parseFeed(feed)
-    } else {
-      console.log('Scheduling', feed.url, 'on', feed.cron)
-
-      if (!cron.validate(feed.cron)) {
-        throw new Error(`${feed.cron} not a valid cron expression`)
-      }
-
-      cron.schedule(feed.cron, () => parseFeed(feed))
-    }
-  }
+  // we parse all feeds at app startup
+  await parseFeeds()
+  await scheduleFeeds()
 })();

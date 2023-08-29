@@ -23,7 +23,6 @@ async function parse(feedUrl) {
       publishedAt: parsePubDate(item.pubDate || item.date),
     }))
   } catch (err) {
-    console.log(err)
     return []
   }
 }

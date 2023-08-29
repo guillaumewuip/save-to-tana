@@ -1,3 +1,4 @@
+const Log = require('./log');
 const API_KEY = process.env.TANA_API_KEY
 
 const Store = require('./store');
@@ -45,7 +46,7 @@ const queue = []
 setInterval(
   () => {
     if (queue.length) {
-      console.log(`Posting ${queue.length} items to Tana`)
+      Log.debug(`Posting ${queue.length} items to Tana`)
 
       // extracting all items from the queue
       const items = queue.splice(0, Infinity)
@@ -53,11 +54,11 @@ setInterval(
       postItems(items)
         .then(() => Store.saveItemsSaved(items.map(item => item.id)))
         .then(() => {
-          console.log(`${items.length} items saved`);
+          Log.debug(`${items.length} items saved`);
         })
         // in case of failure, we put back items in the queue
         .catch(error => {
-          console.error(error);
+          Log.error(error);
           queue.push(...items)
         });
     }
@@ -66,8 +67,10 @@ setInterval(
 )
 
 function saveItems(items) {
-  queue.push(...items)
-  console.log(`Added ${items.length} items to queue (${queue.length} items)`)
+  if (items.length) {
+    queue.push(...items)
+    Log.info(`Added ${items.length} items to queue (${queue.length} items)`)
+  }
 }
 
 module.exports = { saveItems };

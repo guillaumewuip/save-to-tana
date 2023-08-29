@@ -1,4 +1,5 @@
 const { createClient } = require('redis');
+const Log = require('./log');
 
 const REDIS_URL = `redis://${process.env.REDIS_HOST}`
 
@@ -6,15 +7,16 @@ const client = createClient({
   url: REDIS_URL,
 });
 
-client.on('error', error => console.error('Redis Client Error', error));
+client.on('error', error => Log.error('Redis Client Error', error.message));
+client.on('reconnecting', () => Log.debug('Redis Client reconnecting...'));
+client.on('ready', () => Log.info('Redis Client Ready!'));
 
 // change the prefix to trash all existing ids
 const storeId = (id) => `1-${id}`
 
 const initialize = async () => {
-  console.log('Connecting to Redis', REDIS_URL)
+  Log.info('Connecting to Redis', REDIS_URL)
   await client.connect();
-  console.log('Connected!')
 }
 
 const savedAlready = async (itemId) => {
