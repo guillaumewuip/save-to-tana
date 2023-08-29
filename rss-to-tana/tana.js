@@ -54,7 +54,7 @@ setInterval(
       postItems(items)
         .then(() => Store.saveItemsSaved(items.map(item => item.id)))
         .then(() => {
-          Log.debug(`${items.length} items saved`);
+          Log.info(`${items.length} items saved to Tana`);
         })
         // in case of failure, we put back items in the queue
         .catch(error => {
