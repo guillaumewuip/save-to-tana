@@ -12,7 +12,11 @@ client.on('reconnecting', () => Log.debug('Redis Client reconnecting...'));
 client.on('ready', () => Log.info('Redis Client Ready!'));
 
 // change the prefix to trash all existing ids
-const storeId = (id) => `2-${id}`
+// we can also connect to redis and flush the db
+//
+//   flyctl redis connect
+//   > FLUSHALL
+const storeId = (id) => `1-${id}`
 
 const initialize = async () => {
   Log.info('Connecting to Redis', REDIS_URL)
