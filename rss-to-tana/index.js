@@ -133,21 +133,25 @@ async function filterSavedItems(items) {
 }
 
 async function parseFeed(feed) {
-  const items = await extractItems(feed)
-  Log.debug(feed.url, `- ${items.length} items in feed`)
+  try {
+    const items = await extractItems(feed)
+    Log.debug(feed.url, `- ${items.length} items in feed`)
 
-  const notOldItems = await filterOlderItems(items)
-  Log.debug(feed.url, `- ${notOldItems.length} items young enough`)
+    const notOldItems = await filterOlderItems(items)
+    Log.debug(feed.url, `- ${notOldItems.length} items young enough`)
 
-  const notAlreadySaved = await filterSavedItems(notOldItems)
-  Log.info(feed.url, `- ${notAlreadySaved.length} new items`)
+    const notAlreadySaved = await filterSavedItems(notOldItems)
+    Log.info(feed.url, `- ${notAlreadySaved.length} new items`)
 
-  Tana.saveItems(notAlreadySaved);
+    Tana.saveItems(notAlreadySaved);
+  } catch (error) {
+    Log.error('Error in parsing feed', feed.url, error)
+  }
 }
 
 async function parseFeeds() {
   for (const feed of rssFeeds) {
-      await parseFeed(feed)
+    await parseFeed(feed)
   }
 }
 
@@ -173,7 +177,8 @@ async function scheduleFeeds() {
 (async () => {
   await Store.initialize()
 
+  await scheduleFeeds()
+
   // we parse all feeds at app startup
   await parseFeeds()
-  await scheduleFeeds()
 })();
