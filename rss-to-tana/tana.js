@@ -35,7 +35,7 @@ function postItems(items) {
   })
   .then(response => {
     if (!response.ok || response.status !== 200) {
-      throw new Error(`Error saving nodes: ${response.status} ${response.statusText}`)
+      throw new Error(`Error saving nodes in Tana: ${response.status} ${response.statusText}`)
     }
   })
 }
@@ -52,13 +52,11 @@ setInterval(
       const items = queue.splice(0, Infinity)
 
       postItems(items)
+        .then(() => Log.info(`${items.length} items saved to Tana`))
         .then(() => Store.saveItemsSaved(items.map(item => item.id)))
-        .then(() => {
-          Log.info(`${items.length} items saved to Tana`);
-        })
         // in case of failure, we put back items in the queue
         .catch(error => {
-          Log.error(error);
+          Log.error('Error in saving items', error);
           queue.push(...items)
         });
     }
