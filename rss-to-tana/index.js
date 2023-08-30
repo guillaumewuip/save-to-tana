@@ -101,12 +101,13 @@ function dateDiffInDays(a, b) {
 
 async function extractItems(feed) {
   Log.debug(feed.url, '- parsing')
+
   try {
     const items = await RSS.parse(feed.url);
 
     return items.map(rssItem => Item.create(rssItem, feed))
   } catch (error) {
-    Log.error(feed.url, `parsing error`, error);
+    Log.error(`Error extracting items`, feed.url, error);
 
     return []
   }
@@ -114,19 +115,31 @@ async function extractItems(feed) {
 
 // removes items older than 3 days
 async function filterOlderItems(items) {
-  const now = new Date()
-  return items.filter(item => dateDiffInDays(item.publishedAt, now) < 3)
+  try {
+    const now = new Date()
+    return items.filter(item => dateDiffInDays(item.publishedAt, now) < 3)
+  } catch (error) {
+    Log.error(`Error filtering old items`, feed.url, error);
+
+    return []
+  }
 }
 
 async function filterSavedItems(items) {
   const newItems = []
 
-  for (const item of items) {
-    const itemSavedAlready = await Store.savedAlready(item.id)
+  try {
+    for (const item of items) {
+      const itemSavedAlready = await Store.savedAlready(item.id)
 
-    if (!itemSavedAlready) {
-      newItems.push(item)
+      if (!itemSavedAlready) {
+        newItems.push(item)
+      }
     }
+  } catch (error) {
+    Log.error(`Error filtering items saved already`, feed.url, error);
+
+    return []
   }
 
   return newItems
