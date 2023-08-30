@@ -1,5 +1,6 @@
 const { createClient } = require('redis');
 const Log = require('./log');
+const crypto = require('crypto')
 
 const REDIS_URL = `redis://${process.env.REDIS_HOST}`
 
@@ -11,12 +12,18 @@ client.on('error', error => Log.error('Redis Client Error', error.message));
 client.on('reconnecting', () => Log.debug('Redis Client reconnecting...'));
 client.on('ready', () => Log.info('Redis Client Ready!'));
 
-// change the prefix to trash all existing ids
-// we can also connect to redis and flush the db
-//
-//   flyctl redis connect
-//   > FLUSHALL
-const storeId = (id) => `1-${id}`
+const storeId = (id) => {
+  // we hash the id to have something cleaner than raw url,
+  // and to be sure to use valid caracters
+  const hashedId = crypto.createHash('md5').update(id).digest("hex")
+
+  // change the prefix to trash all existing ids
+  // we can also connect to redis and flush the db
+  //
+  //   flyctl redis connect
+  //   > FLUSHALL
+  return `1-${hashedId}`
+}
 
 const initialize = async () => {
   Log.info('Connecting to Redis', REDIS_URL)
