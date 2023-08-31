@@ -114,7 +114,7 @@ async function extractItems(feed) {
 }
 
 // removes items older than 3 days
-async function filterOlderItems(items) {
+async function filterOlderItems(feed, items) {
   try {
     const now = new Date()
     return items.filter(item => dateDiffInDays(item.publishedAt, now) < 3)
@@ -125,7 +125,7 @@ async function filterOlderItems(items) {
   }
 }
 
-async function filterSavedItems(items) {
+async function filterSavedItems(feed, items) {
   const newItems = []
 
   try {
@@ -150,10 +150,10 @@ async function parseFeed(feed) {
     const items = await extractItems(feed)
     Log.debug(feed.url, `- ${items.length} items in feed`)
 
-    const notOldItems = await filterOlderItems(items)
+    const notOldItems = await filterOlderItems(feed, items)
     Log.debug(feed.url, `- ${notOldItems.length} items young enough`)
 
-    const notAlreadySaved = await filterSavedItems(notOldItems)
+    const notAlreadySaved = await filterSavedItems(feed, notOldItems)
     Log.info(feed.url, `- ${notAlreadySaved.length} new items`)
 
     Tana.saveItems(notAlreadySaved);
