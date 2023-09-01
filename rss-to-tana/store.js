@@ -6,11 +6,13 @@ const REDIS_URL = `redis://${process.env.REDIS_HOST}`
 
 const client = createClient({
   url: REDIS_URL,
+  pingInterval: 1000 * 60 * 4,
 });
 
 client.on('error', error => Log.error('Redis Client Error', error.message));
 client.on('reconnecting', () => Log.debug('Redis Client reconnecting...'));
 client.on('ready', () => Log.info('Redis Client Ready!'));
+client.on('connect', () => {});
 
 const storeId = (id) => {
   // we hash the id to have something cleaner than raw url,
