@@ -29,6 +29,11 @@ const rssFeeds = [
     toTana: Item.tana.album,
   },
   {
+    url: 'https://pitchfork.com/rss/reviews/best/reissues/',
+    cron: schedules.twiceAtNight,
+    toTana: Item.tana.album,
+  },
+  {
     url: 'https://www.prun.net/emission/8MNV-iss/rss',
     cron: schedules.twiceAtNight,
     toTana: Item.tana.music,
