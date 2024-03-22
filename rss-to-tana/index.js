@@ -53,17 +53,22 @@ const rssFeeds = [
   {
     // Codrops
     url: 'http://feeds2.feedburner.com/tympanus',
-    cron: schedules.everyHour,
+    cron: schedules.twiceAtNight,
     toTana: Item.tana.website,
   },
   {
     url: 'https://leaddev.com/content-piece-and-series/rss.xml',
-    cron: schedules.everyHour,
+    cron: schedules.twiceAtNight,
     toTana: Item.tana.website,
   },
   {
     // Thoughtworks Technology Podcast
     url: 'http://feeds.soundcloud.com/users/soundcloud:users:94605026/sounds.rss',
+    cron: schedules.twiceAtNight,
+    toTana: Item.tana.website,
+  },
+  {
+    url: 'https://lethain.com/feeds.xml',
     cron: schedules.everyHour,
     toTana: Item.tana.website,
   },
