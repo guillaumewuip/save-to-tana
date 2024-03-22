@@ -7,7 +7,8 @@ app = "rss-to-tana"
 primary_region = "cdg"
 
 [build]
-  builder = "heroku/buildpacks:20"
+  builder = "paketobuildpacks/builder:base"
+  buildpacks = ["gcr.io/paketo-buildpacks/nodejs"]
 
 [env]
   NODE_ENV = "production"
