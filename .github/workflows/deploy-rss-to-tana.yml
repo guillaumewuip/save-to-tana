@@ -16,7 +16,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: superfly/flyctl-actions/setup-flyctl@v1.5
+      - uses: superfly/flyctl-actions/setup-flyctl@1.5
         with:
           version: 0.1.63 # as of 21/07/2023
       - run: flyctl deploy
