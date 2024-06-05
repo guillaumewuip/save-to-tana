@@ -24,12 +24,12 @@ const rssFeeds = [
     toTana: Item.tana.music,
   },
   {
-    url: 'http://pitchfork.com/rss/reviews/best/albums/',
+    url: 'http://pitchfork.com/reviews/best/albums/rss',
     cron: schedules.twiceAtNight,
     toTana: Item.tana.album,
   },
   {
-    url: 'https://pitchfork.com/rss/reviews/best/reissues/',
+    url: 'https://pitchfork.com/reviews/best/reissues/rss',
     cron: schedules.twiceAtNight,
     toTana: Item.tana.album,
   },
@@ -40,11 +40,6 @@ const rssFeeds = [
   },
   {
     url: 'https://stnt.org/rss.xml',
-    cron: schedules.twiceAtNight,
-    toTana: Item.tana.album,
-  },
-  {
-    url: 'https://www.tsugi.fr/feed/',
     cron: schedules.twiceAtNight,
     toTana: Item.tana.album,
   },
@@ -74,27 +69,12 @@ const rssFeeds = [
   },
 
   // Design
-  {
-    url: 'http://minimalissimo.com/feed/',
-    cron: schedules.twiceAtNight,
-    toTana: Item.tana.website,
-  },
 
   // Personal Development
-  {
-    url: 'http://feeds.feedburner.com/zenhabits',
-    cron: schedules.twiceAtNight,
-    toTana: Item.tana.website,
-  },
 
   // Others
   {
     url: 'http://www.lesothers.com/feed/',
-    cron: schedules.twiceAtNight,
-    toTana: Item.tana.website,
-  },
-  {
-    url: 'https://worksinprogress.substack.com/feed/',
     cron: schedules.twiceAtNight,
     toTana: Item.tana.website,
   }
