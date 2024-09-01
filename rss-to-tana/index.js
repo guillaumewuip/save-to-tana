@@ -24,12 +24,12 @@ const rssFeeds = [
     toTana: Item.tana.music,
   },
   {
-    url: 'http://pitchfork.com/reviews/best/albums/rss',
+    url: 'https://pitchfork.com/feed/reviews/best/albums/rss',
     cron: schedules.twiceAtNight,
     toTana: Item.tana.album,
   },
   {
-    url: 'https://pitchfork.com/reviews/best/reissues/rss',
+    url: 'https://pitchfork.com/feed/reviews/best/reissues/rss',
     cron: schedules.twiceAtNight,
     toTana: Item.tana.album,
   },
