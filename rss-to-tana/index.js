@@ -13,11 +13,11 @@ const schedules = {
 
 const rssFeeds = [
   // Music
-  {
-    url: 'https://lesoreillescurieuses.com/feed/',
-    cron: schedules.twiceAtNight,
-    toTana: Item.tana.album,
-  },
+  // {
+  //   url: 'https://lesoreillescurieuses.com/feed/',
+  //   cron: schedules.twiceAtNight,
+  //   toTana: Item.tana.album,
+  // },
   {
     url: 'https://cmd.wuips.com/rss/feed.xml',
     cron: schedules.everyHour,
