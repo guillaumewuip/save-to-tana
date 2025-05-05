@@ -41,12 +41,6 @@ const rssFeeds = [
 
   // Tech
   {
-    // Codrops
-    url: 'http://feeds2.feedburner.com/tympanus',
-    cron: schedules.twiceAtNight,
-    toTana: Item.tana.website,
-  },
-  {
     url: 'https://leaddev.com/content-piece-and-series/rss.xml',
     cron: schedules.twiceAtNight,
     toTana: Item.tana.website,
