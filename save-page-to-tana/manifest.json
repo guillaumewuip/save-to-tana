@@ -8,6 +8,9 @@
     "scripting",
     "alarms"
   ],
+  "host_permissions": [
+    "https://generativeai.googleapis.com/*"
+  ],
   "action": {
     "default_popup": "popup.html"
   },
