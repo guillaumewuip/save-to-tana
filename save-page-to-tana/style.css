@@ -46,10 +46,6 @@ main {
   background-color: rgb(224, 227, 231);
 }
 
-.message#error {
-  background-color: rgb(240, 96, 72);
-}
-
 .message#success {
   background-color: rgb(215, 251, 193);
 }

@@ -1,41 +1,85 @@
-function postNodes(nodes) {
-  chrome.runtime.sendMessage({ type: 'PAGE_SAVING' });
+/// clean dead queue
+async function addItemsToQueue(items, queueName) {
+  const result = await chrome.storage.local.get([queueName])
 
-  chrome.storage.sync.get(['API_KEY', 'API_ENDPOINT'], (result) => {
-    const apiKey = result.API_KEY;
-    const apiEndpoint = result.API_ENDPOINT;
+  const queue = result[queueName] || [];
+  queue.push(...items);
 
-    const body = JSON.stringify({
-      targetNodeId: 'INBOX',
-      nodes,
-    })
+  await chrome.storage.local.set({ [queueName]: queue });
+}
 
-    console.log('Sending payload', {
-      apiEndpoint,
-      body,
-    })
+async function take10FromQueue(queueName) {
+  const result = await chrome.storage.local.get([queueName]);
+  const queue = result[queueName] || [];
+  const items = queue.slice(0, 10);
+  const remaining = queue.slice(10);
 
-    fetch(apiEndpoint, {
+  await chrome.storage.local.set({ [queueName]: remaining });
+
+  return items;
+}
+
+async function processQueue() {
+  const items = await take10FromQueue('saveQueue');
+
+  if (items.length === 0) {
+    return;
+  }
+
+  const { API_KEY, API_ENDPOINT } = await chrome.storage.sync.get(['API_KEY', 'API_ENDPOINT'])
+
+  if (!API_KEY || !API_ENDPOINT) {
+    throw new Error('API_KEY or API_ENDPOINT not set')
+  }
+
+  const body = JSON.stringify({
+    targetNodeId: 'INBOX',
+    nodes: items.map(item => item.node),
+  });
+
+  console.log('Saving nodes', { API_ENDPOINT, body })
+
+  try {
+    const response = await fetch(API_ENDPOINT, {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${apiKey}`,
+        'Authorization': `Bearer ${API_KEY}`,
         'Content-Type': 'application/json'
       },
       body,
-    })
-      .then((response) => {
-        console.log('Response:', response)
-        if (response.ok) {
-          chrome.runtime.sendMessage({ type: 'PAGE_SAVED' });
-        } else {
-          chrome.runtime.sendMessage({ type: 'SAVE_ERROR', response });
-        }
-      })
-      .catch((error) => {
-        console.error(error)
-        chrome.runtime.sendMessage({ type: 'SAVE_ERROR', error });
-      });
-  });
+    });
+
+    if (!response.ok) {
+      throw new Error(`API error in saving nodes: ${response.status} ${response.statusText}`);
+    }
+
+    console.info('Nodes saved successfully');
+  } catch (error) {
+    console.error('Error saving nodes:', error);
+
+    const itemsWithError = items
+      .map(item => ({
+        ...item,
+        retry: item.retry + 1
+      }))
+
+    const itemsToRetry = itemsWithError.filter(item => item.retry <= 5);
+    const deadItems = itemsWithError.filter(item => item.retry > 5);
+
+    console.warn('Items to retry:', itemsToRetry);
+    await addItemsToQueue(itemsToRetry, 'saveQueue');
+
+    console.warn('Dead items:', deadItems);
+    await addItemsToQueue(deadItems, 'deadQueue');
+  }
+}
+
+async function postNodes(nodes) {
+  // Add item to queue and immediately respond as "saved"
+  await addItemsToQueue(nodes.map(node => ({
+    node,
+    retry: 0
+  })), 'saveQueue');
 }
 
 function savePage({ title, url }) {
@@ -163,6 +207,21 @@ function saveAlbum(data) {
 function saveMusic(data) {
   return saveMusicRelatedItem('VI7FwJEpFAqY')(data)
 }
+
+// Set up recurring queue processor
+chrome.runtime.onInstalled.addListener(() => {
+  // Create alarm for queue processing every 5 seconds
+  chrome.alarms.create('processQueue', { 
+    delayInMinutes: 0.1, // Start after 6 seconds
+    periodInMinutes: 0.1 // Repeat every 6 seconds
+  });
+});
+
+chrome.alarms.onAlarm.addListener((alarm) => {
+  if (alarm.name === 'processQueue') {
+    processQueue();
+  }
+});
 
 chrome.runtime.onMessage.addListener((message) => {
   console.log({ message })

@@ -27,4 +27,11 @@ document.addEventListener("DOMContentLoaded", () => {
       );
     });
   });
+
+  chrome.storage.local.get(["deadQueue"], (result) => {
+    const deadItems = result.deadQueue || [];
+    const deadItemsContainer = document.querySelector("#dead_items");
+
+    deadItemsContainer.innerHTML = JSON.stringify(deadItems, null, 2);
+  });
 });
