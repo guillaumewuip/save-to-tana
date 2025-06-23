@@ -3,10 +3,10 @@ document.addEventListener("DOMContentLoaded", () => {
 })
 
 setTimeout(() => {
-  document.getElementById("success").classList.remove('hidden')
+  document.getElementById("success").classList.remove('hidden');
   document.getElementById("loader").classList.add('hidden');
 
   setTimeout(() => {
-      window.close();
+    window.close();
   }, 500);
 }, 500);

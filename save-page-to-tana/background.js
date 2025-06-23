@@ -25,9 +25,8 @@ function createWebPageSummarizer(apiKey) {
     }
 
     const data = await response.json();
-    console.log('API response:', data);
 
-    return data.candidates[0].output;
+    return data.candidates[0].content.parts[0].text;
   }
 
   async function summarizeWebPage(pageContent) {
@@ -35,40 +34,46 @@ function createWebPageSummarizer(apiKey) {
 I will provide the content of a webpage and you will summarize it. Here are some guidelines for you to follow:
 
 - Since this is a webpage, make sure to filter out any irrelevant details and include only the main content.
+- Make sure to extract the key points, and if relevant for the content, make it action-oriented.
 - Do not include any information that is not relevant to the main content of the webpage.
-- Include emojis to make it more engaging. Only include the emojis in the headings; they should NOT be in the body points. They should be relevant to the content of the heading.
-- Only have headings and body points. Make sure to have multiple headings and body points.
-- Utilize bulleted lists. Use "-" bullet instead of "*". Only include the bullet icon for the body points, not the heading. Make headings bold. Only use ** for bold.
-- Only write in English.
+- Utilize bulleted lists. Use "-" bullet instead of "*".
+- Write the summary in the language the page is written in
 
 Here are some things that I told you not to do but you did them anyway. If you do them now, I will be very disappointed:
-- Do NOT make a multi-level outline.
 - Do NOT include subheadings.
 - Do NOT use <h2>, <h3>, etc. tags.
 - Do NOT use ##, ###, etc. in the text.
-- Do NOT use indentation of any kind.
 - Do NOT put two or more spaces in succession.
-- Do NOT use the same emoji more than once.
-- Do NOT use the same emoji twice in the same heading (before and after the heading text). Again, Do NOT use the same emoji twice in the same heading.
+- DO NOT introduce more than one level of indentation
 - Do NOT add lines between headings and body points as well as between body points and other body points.
-- Do NOT put the emoji (in the heading) in parenthesis. Just put the actual emoji icon after the heading text (followed by a space).
+- DO NOT surrounds the response with { and }
 
-Here is the general format that you should follow in your response. For the things that are in <> you should replace them with the actual content. For example, <emoji> should be replaced with the actual emoji icon. The same goes for the headings and body points. Here is the format: {
+Here is the general format that you should follow in your response. 
+- For the things that are in <> you should replace them with the actual content. 
+- It should be a valid JSON array of objects.
+- "name" values should not contain any new lines
 
-**Heading 1<space><1 emoji>**
-- Body point 1
-- Body point 2
-- <use as many body points as you want>
-<empty line>
-<empty line>
-**Heading 2<space><1 emoji>**
-- Body point 1
-- Body point 2
-- <use as many body points as you want>
-<empty line>
-<empty line>
-<use as many headings as you want>
+Here is the format: 
 
+[
+  {
+    "name": "<One line summary - what is the page about?>",
+    "children": [
+      { "name: "<a bit more detail about the page>" },
+      { "name: "<a bit more detail about the page>" },
+      { "name: "<use as many objects as you need to summarize the page>" }
+    ]
+  },
+  {
+    "name": "People mentioned", // This is optional, only if the page mentions relevant people
+    "children": [
+      { "name": "<person 1 name>" },
+      { "name": "<person 2 name>" },
+      { "name": "<add as many person as needed>" }
+    ]
+  }
+]
+  
 Here is the content of the webpage. Be thorough:
 ${pageContent}
     `;
@@ -89,6 +94,14 @@ ${pageContent}
   }
 
   return { summarizeWebPage }
+}
+
+function summaryToChildren(data) {
+  try {
+    return JSON.parse(data)
+  } catch (error) {
+    return [{ name: "Error parsing JSON summary" }];
+  }
 }
 
 const webpageSummarizer = createWebPageSummarizer("AIzaSyBqOeoZSvMNXcu8hWoTFmIswhOfBFZYtzY");
@@ -176,7 +189,14 @@ async function postNodes(nodes) {
   })), 'saveQueue');
 }
 
-function savePage({ title, url }) {
+async function savePage({ title, url, content }) {
+  const summary = await webpageSummarizer.summarizeWebPage(`
+PAGE TITLE: ${title}
+PAGE URL: ${url}
+PAGE CONTENT: 
+${content}
+`);
+
   const nodes = [
     {
       name: title,
@@ -212,13 +232,15 @@ function savePage({ title, url }) {
             }
           ]
         },
+        {
+          /* Summary */
+          type: "field",
+          attributeId: "fvfamJjU6oY5",
+          children: summaryToChildren(summary),
+        }
       ]
     }
   ]
-
-  webpageSummarizer.summarizeWebPage(title)
-    .then(console.log)
-    .catch(console.error)
 
   return postNodes(nodes)
 }
@@ -322,7 +344,7 @@ chrome.alarms.onAlarm.addListener((alarm) => {
 });
 
 chrome.runtime.onMessage.addListener((message) => {
-  console.log({ message })
+  console.info('Received message', message)
 
   switch (message.type) {
     case 'popupOpened': {
@@ -331,8 +353,8 @@ chrome.runtime.onMessage.addListener((message) => {
 
         chrome.scripting
           .executeScript({
-            target : {tabId : activeTab.id},
-            files : [ "content_script.js" ],
+            target: { tabId: activeTab.id },
+            files: ["content_script.js"],
           })
       });
       return
@@ -369,6 +391,7 @@ chrome.runtime.onMessage.addListener((message) => {
       savePage({
         title: message.title,
         url: message.url,
+        content: message.content,
       })
       return
     }

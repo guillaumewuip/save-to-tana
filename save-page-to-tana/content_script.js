@@ -13,10 +13,14 @@
     const pageUrl = window.location.href;
     const pageTitle = document.title;
 
+    const selection = window.getSelection().toString();
+    const content = selection ? selection : document.body.innerText;
+
     return {
       type: 'save_generic',
       url: pageUrl,
-      title: pageTitle
+      title: pageTitle,
+      content,
     };
   }
 
@@ -207,6 +211,7 @@
             type: 'savePage',
             title: result.title,
             url: result.url,
+            content: result.content,
           });
           return;
         }
