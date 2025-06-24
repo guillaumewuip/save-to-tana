@@ -13,10 +13,6 @@ function createWebPageSummarizer(apiKey) {
             text: prompt
           }]
         }],
-        generationConfig: {
-          maxOutputTokens: 2048,
-          temperature: 1.0,
-        }
       })
     });
 
@@ -31,52 +27,48 @@ function createWebPageSummarizer(apiKey) {
 
   async function summarizeWebPage(pageContent) {
     const prompt = `
-I will provide the content of a webpage and you will summarize it. Here are some guidelines for you to follow:
+You are a webpage summarization API that MUST return valid JSON. Your response will be parsed programmatically.
 
-- Since this is a webpage, make sure to filter out any irrelevant details and include only the main content.
-- Make sure to extract the key points, and if relevant for the content, make it action-oriented.
-- Do not include any information that is not relevant to the main content of the webpage.
-- Utilize bulleted lists. Use "-" bullet instead of "*".
-- Write the summary in the language the page is written in
+CRITICAL: Your response must be ONLY valid JSON - no explanations, no markdown formatting, no text before or after the JSON.
 
-Here are some things that I told you not to do but you did them anyway. If you do them now, I will be very disappointed:
-- Do NOT include subheadings.
-- Do NOT use <h2>, <h3>, etc. tags.
-- Do NOT use ##, ###, etc. in the text.
-- Do NOT put two or more spaces in succession.
-- DO NOT introduce more than one level of indentation
-- Do NOT add lines between headings and body points as well as between body points and other body points.
-- DO NOT surrounds the response with { and }
+Guidelines for summarization:
+- Filter out irrelevant details, focus on main content
+- Extract key points and make them action-oriented when relevant
+- Write in the same language as the webpage
+- No subheadings, HTML tags, or markdown formatting
+- No double spaces or excessive indentation
+- Keep "name" values as single lines without line breaks
 
-Here is the general format that you should follow in your response. 
-- For the things that are in <> you should replace them with the actual content. 
-- It should be a valid JSON array of objects.
-- "name" values should not contain any new lines
-
-Here is the format: 
-
+Required JSON format (copy this structure exactly, with children as arrays of any length):
 [
   {
-    "name": "<One line summary - what is the page about?>",
+    "name": "One line summary of what the page is about",
     "children": [
-      { "name: "<a bit more detail about the page>" },
-      { "name: "<a bit more detail about the page>" },
-      { "name: "<use as many objects as you need to summarize the page>" }
+      { "name": "Key detail about the page content" },
+      { "name": "Another important detail" },
+      { "name": "Additional relevant information" }
     ]
   },
   {
-    "name": "People mentioned", // This is optional, only if the page mentions relevant people
+    "name": "People mentioned",
     "children": [
-      { "name": "<person 1 name>" },
-      { "name": "<person 2 name>" },
-      { "name": "<add as many person as needed>" }
+      { "name": "Person Name 1" },
+      { "name": "Person Name 2" }
     ]
   }
 ]
-  
-Here is the content of the webpage. Be thorough:
+
+IMPORTANT RULES:
+1. ONLY include the "People mentioned" section if people are actually mentioned in the content
+2. Your entire response must be valid JSON that can be parsed by JSON.parse()
+3. Do not wrap the JSON in code blocks or add any explanatory text
+4. Ensure all quotes are properly escaped
+5. Do not include comments in the JSON
+
+Webpage content to summarize:
 ${pageContent}
-    `;
+
+Return only the JSON array:`;
 
     try {
       const rawSummary = await generateContent(prompt);
@@ -100,6 +92,7 @@ function summaryToChildren(data) {
   try {
     return JSON.parse(data)
   } catch (error) {
+    console.error('Error parsing JSON summary:', error, data);
     return [{ name: "Error parsing JSON summary" }];
   }
 }

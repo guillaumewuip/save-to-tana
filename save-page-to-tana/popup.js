@@ -8,5 +8,5 @@ setTimeout(() => {
 
   setTimeout(() => {
     window.close();
-  }, 500);
-}, 500);
+  }, 200);
+}, 300);
