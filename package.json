@@ -1,4 +1,8 @@
 {
   "name": "save-to-tana",
-  "workspaces": ["rss-to-tana", "summarize-page"]
+  "workspaces": ["rss-to-tana", "summarize-page"],
+  "scripts": {
+    "start": "npm run start --workspace=rss-to-tana",
+    "build": "npm run build --workspaces --if-present"
+  },
 }

@@ -7,10 +7,9 @@ app = "rss-to-tana-2"
 primary_region = "cdg"
 
 [build]
-builder = "paketobuildpacks/builder:base"
 
 [env]
 NODE_ENV = "production"
 
 [processes]
-rss = "cd rss-to-tana && npm start"
+rss = "npm start"
