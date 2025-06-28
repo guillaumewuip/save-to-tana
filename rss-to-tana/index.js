@@ -84,7 +84,7 @@ async function extractItems(feed) {
   try {
     const items = await RSS.parse(feed.url);
 
-    return items.map(rssItem => Item.create(rssItem, feed))
+    return await Promise.all(items.map(rssItem => Item.create(rssItem, feed)))
   } catch (error) {
     Log.error(`Error extracting items`, feed.url, error);
 

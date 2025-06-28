@@ -88,11 +88,11 @@ function website(feedUrl, item) {
   }
 }
 
-const create = (rssItem, feed) => ({
+const create = async (rssItem, feed) => ({
   id: rssItem.link,
   title: rssItem.title,
   publishedAt: rssItem.publishedAt,
-  tanaNode: feed.toTana(feed.url, rssItem),
+  tanaNode: await feed.toTana(feed.url, rssItem),
   feed,
 })
 
