@@ -1,0 +1,4 @@
+{
+  "name": "save-to-tana",
+  "workspaces": ["rss-to-tana"]
+}

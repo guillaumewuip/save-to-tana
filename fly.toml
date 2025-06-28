@@ -13,4 +13,4 @@ builder = "paketobuildpacks/builder:base"
 NODE_ENV = "production"
 
 [processes]
-rss = "npm start"
+rss = "cd rss-to-tana && npm start"
