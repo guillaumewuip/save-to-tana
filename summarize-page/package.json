@@ -1,0 +1,6 @@
+{
+  "name": "summarize-page",
+  "type": "module",
+  "main": "index.js",
+  "private": true
+}

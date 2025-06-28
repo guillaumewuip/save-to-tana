@@ -1,5 +1,5 @@
 const { fetchPageContent } = require('./fetcher');
-const { createWebPageSummarizer } = require('./summarize-page');
+const { createWebPageSummarizer } = require('summarize-page');
 
 const webpageSummarizer = createWebPageSummarizer("AIzaSyBqOeoZSvMNXcu8hWoTFmIswhOfBFZYtzY");
 

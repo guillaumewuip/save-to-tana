@@ -1,4 +1,4 @@
 {
   "name": "save-to-tana",
-  "workspaces": ["rss-to-tana"]
+  "workspaces": ["rss-to-tana", "summarize-page"]
 }
