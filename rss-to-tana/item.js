@@ -1,3 +1,8 @@
+const { fetchPageContent } = require('./fetcher');
+const { createWebPageSummarizer } = require('./summarize-page');
+
+const webpageSummarizer = createWebPageSummarizer("AIzaSyBqOeoZSvMNXcu8hWoTFmIswhOfBFZYtzY");
+
 function source(feedUrl) {
   return {
     /* Source */
@@ -38,7 +43,7 @@ function url(item) {
   }
 }
 
-function album(feedUrl, item) {
+async function album(feedUrl, item) {
   return {
     name: item.title,
     supertags: [
@@ -55,7 +60,7 @@ function album(feedUrl, item) {
   }
 }
 
-function music(feedUrl, item) {
+async function music(feedUrl, item) {
   return {
     name: item.title,
     supertags: [
@@ -72,8 +77,14 @@ function music(feedUrl, item) {
   }
 }
 
-function website(feedUrl, item) {
-  return {
+async function website(feedUrl, item) {
+  const pageContent = await fetchPageContent(item.link);
+
+  const summaryChildren = pageContent.type === 'success' ? 
+    await webpageSummarizer.summarizeWebPage(pageContent.content) 
+    : null;
+
+  const node = {
     name: item.title,
     supertags: [
       {
@@ -83,9 +94,20 @@ function website(feedUrl, item) {
     ],
     children: [
       url(item),
-      source(feedUrl)
+      source(feedUrl),    
     ]
   }
+
+  if (summaryChildren) {
+    node.children.push({
+      /* Summary */
+      type: "field",
+      attributeId: "fvfamJjU6oY5",
+      children: summaryChildren,
+    })
+  }
+  
+  return node;
 }
 
 const create = async (rssItem, feed) => ({
@@ -95,7 +117,6 @@ const create = async (rssItem, feed) => ({
   tanaNode: await feed.toTana(feed.url, rssItem),
   feed,
 })
-
 
 module.exports = {
   tana: {
