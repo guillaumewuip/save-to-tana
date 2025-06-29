@@ -24,13 +24,11 @@ SYNC_FEEDS = true
     handlers = ["http"]
     port = 80
 
-[checks]
-  [checks.health]
+  [[http_service.checks]]
     grace_period = "10s"
     interval = "30s"
     method = "GET"
     timeout = "5s"
     path = "/health"
-    type = "http"
 
 swap_size_mb = 512
