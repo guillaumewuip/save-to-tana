@@ -8,5 +8,6 @@ README.md
 coverage
 .DS_Store
 *.log
+
 save-page-to-tana
 fly.toml
