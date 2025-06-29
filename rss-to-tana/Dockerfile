@@ -14,6 +14,6 @@ COPY summarize-page/ ./summarize-page/
 
 WORKDIR /app/rss-to-tana
 
-EXPOSE 3000
+EXPOSE 8080
 
 CMD ["npm", "start"]

@@ -17,17 +17,12 @@ NODE_ENV = "production"
 SYNC_FEEDS = true
 
 [[services]]
-  internal_port = 3000
   auto_stop_machines = "off"
   auto_start_machines = false
 
   [[services.ports]]
     handlers = ["http"]
     port = 80
-
-  [[services.ports]]
-    handlers = ["tls", "http"]
-    port = 443
 
 [checks]
   [checks.health]
@@ -36,7 +31,6 @@ SYNC_FEEDS = true
     method = "GET"
     timeout = "5s"
     path = "/health"
-    port = 80
     type = "http"
 
 swap_size_mb = 512
