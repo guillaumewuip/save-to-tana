@@ -16,15 +16,12 @@ strategy = "immediate"
 NODE_ENV = "production"
 SYNC_FEEDS = true
 
-[[services]]
+[http_service]
+  internal_port = 8080
   auto_stop_machines = "off"
   auto_start_machines = false
-
-  [[services.ports]]
-    handlers = ["http"]
-    port = 80
-
-  [[http_service.checks]]
+  
+  [http_service.checks]
     grace_period = "10s"
     interval = "30s"
     method = "GET"
