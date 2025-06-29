@@ -15,7 +15,7 @@ fastify.get('/health', async (req, reply) => {
 
 const start = async () => {
   try {
-    await fastify.listen({ port: 8080 });
+    await fastify.listen({ port: 8080, host: '0.0.0.0' });
 
     if (process.env.SYNC_FEEDS === 'true') {
       await Feeds.start();
