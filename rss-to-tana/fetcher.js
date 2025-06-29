@@ -3,16 +3,10 @@ import * as domutils from 'domutils';
 
 import { createWebPageSummarizer } from 'summarize-page';
 
-const webpageSummarizer = createWebPageSummarizer("AIzaSyBqOeoZSvMNXcu8hWoTFmIswhOfBFZYtzY");
+const webpageSummarizer = createWebPageSummarizer(process.env.GEMINI_API_KEY);
 
 export async function summarizePage(url) {
   try {
-    // Validate URL
-    if (!url || typeof url !== 'string') {
-      return { type: "error", error: new Error('Invalid URL provided') };
-    }
-
-    // Fetch the page with timeout
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 10000);
     

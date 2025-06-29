@@ -85,11 +85,11 @@ Return only the JSON array:`;
       return summaryToChildren(rawSummary);
     } catch (error) {
       if (error.message.includes("SAFETY")) {
-        return "Content may violate content policy.";
+        return [{ name: "Content may violate content policy." }] ;
       } else if (error.message.includes("overloaded")) {
-        return "The model is overloaded. Please try again later.";
+        return [{ name: "The model is overloaded. Please try again later." }];
       } else {
-        return `Error: ${error.message}`;
+        return [{ name: `Error: ${error.message}` }];
       }
     }
   }
