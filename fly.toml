@@ -17,3 +17,7 @@ SYNC_FEEDS = true
   auto_start_machines = false
 
 swap_size_mb = 512
+
+[[vm]]
+  size = "shared-cpu-1x"
+  memory = "512mb"
