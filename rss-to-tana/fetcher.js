@@ -1,9 +1,7 @@
 import * as htmlparser2 from 'htmlparser2';
 import * as domutils from 'domutils';
 
-import { createWebPageSummarizer } from 'summarize-page';
-
-const webpageSummarizer = createWebPageSummarizer(process.env.GEMINI_API_KEY);
+import { summarizeWebPage  } from 'summarize-page';
 
 export async function summarizePage(url) {
   try {
@@ -28,9 +26,7 @@ export async function summarizePage(url) {
     const textContent = domutils.innerText(dom.children);
     const cleanedContent = textContent.replace(/\s+/g, ' ').trim(); 
 
-    const summaryChildren = await webpageSummarizer.summarizeWebPage(cleanedContent);
-
-    return summaryChildren;
+    return await summarizeWebPage(process.env.GEMINI_API_KEY, cleanedContent);
   } catch (error) {
     if (error.name === 'AbortError') {
       return [{ name: "Request timed out" }];

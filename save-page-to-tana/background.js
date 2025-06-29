@@ -1,4 +1,4 @@
-import { createWebPageSummarizer  } from './summarize-page.js';
+import { summaryToNodes, summarizeWebPage } from './summarize-page.js';
 
 async function addItemsToQueue(items, queueName) {
   const result = await chrome.storage.local.get([queueName])
@@ -86,11 +86,7 @@ async function postNodes(nodes) {
 async function savePage({ title, url, content }) {
   const { GEMINI_API_KEY } = await chrome.storage.sync.get(['GEMINI_API_KEY'])
 
-  const webpageSummarizer = createWebPageSummarizer(GEMINI_API_KEY);
-
-  console.log('GEMINI_API_KEY', GEMINI_API_KEY)
-
-  const summaryChildren = await webpageSummarizer.summarizeWebPage(`
+  const summary = await summarizeWebPage(GEMINI_API_KEY, `
 PAGE TITLE: ${title}
 PAGE URL: ${url}
 PAGE CONTENT: 
@@ -136,7 +132,7 @@ ${content}
           /* Summary */
           type: "field",
           attributeId: "fvfamJjU6oY5",
-          children: summaryChildren,
+          children: summaryToNodes(summary),
         }
       ]
     }

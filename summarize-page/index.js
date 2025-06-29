@@ -1,41 +1,66 @@
-function summaryToChildren(data) {
+function summaryToObject(data) {
   try {
-    return JSON.parse(data)
+    const parsedData = JSON.parse(data);
+    return {
+      type: "success",
+      oneLine: parsedData.summary.oneLine,
+      details: parsedData.summary.details,
+      peopleMentioned: parsedData.peopleMentioned || []
+    };
   } catch (error) {
-    console.error('Error parsing JSON summary:', error);
-    return [{ name: "Error parsing JSON summary" }];
+    return { type: "error", error };
   }
 }
 
-function createWebPageSummarizer(apiKey) {
-  async function generateContent(prompt) {
-    const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
-    
-    const response = await fetch(endpoint, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        contents: [{
-          parts: [{
-            text: prompt
-          }]
-        }],
-      })
-    });
-
-    if (!response.ok) {
-      throw new Error(`API error: ${response.status} ${await response.text()}`);
+export function summaryToNodes(data) {
+  return [
+    {
+      name: data.oneLine,
+      children: data.details.map(detail => ({ name: detail }))
+    },
+    {
+      name: "People Mentioned",
+      children: data.peopleMentioned.map(person => ({ name: person }))
     }
+  ];
+}
 
-    const data = await response.json();
+export function summaryToTanaPaste(data) {
+  return `%%tana%%
+- ${data.oneLine}
+${data.details.map(detail => `  - ${detail}`).join('\n')}
+${data.peopleMentioned.length > 0 ? `- People Mentioned:\n${data.peopleMentioned.map(person => `  - ${person}`).join('\n')}` : ''}
+`;
+}
 
-    return data.candidates[0].content.parts[0].text;
+async function generateContent(apiKey, prompt) {
+  const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
+  
+  const response = await fetch(endpoint, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      contents: [{
+        parts: [{
+          text: prompt
+        }]
+      }],
+    })
+  });
+
+  if (!response.ok) {
+    throw new Error(`API error: ${response.status} ${await response.text()}`);
   }
 
-  async function summarizeWebPage(pageContent) {
-    const prompt = `
+  const data = await response.json();
+
+  return data.candidates[0].content.parts[0].text;
+}
+
+export async function summarizeWebPage(apiKey, pageContent) {
+  const prompt = `
 You are a webpage summarization API that MUST return valid JSON. Your response will be parsed programmatically.
 
 CRITICAL: Your response must be ONLY valid JSON - no explanations, no markdown formatting, no text before or after the JSON.
@@ -46,30 +71,27 @@ Guidelines for summarization:
 - Write in the same language as the webpage
 - No subheadings, HTML tags, or markdown formatting
 - No double spaces or excessive indentation
-- Keep "name" values as single lines without line breaks
+- Keep "oneLine" and "details" values as single lines without line breaks
 
 Required JSON format (copy this structure exactly, with children as arrays of any length):
-[
-  {
-    "name": "One line summary of what the page is about",
-    "children": [
-      { "name": "Key detail about the page content" },
-      { "name": "Another important detail" },
-      { "name": "Additional relevant information" }
-    ]
-  },
-  {
-    "name": "People mentioned",
-    "children": [
-      { "name": "Person Name 1" },
-      { "name": "Person Name 2" }
-    ]
-  }
+{
+"summary": {
+  "oneLine": "One line summary of what the page is about",
+  "details": [
+    "Key detail about the page content",
+    "Another important detail",
+    "Additional relevant information"
+  ]
+},
+"peopleMentioned": [
+  "Person Name 1",
+  "Person Name 2"
 ]
+}
 
 IMPORTANT RULES:
-1. ONLY include the "People mentioned" section if people are actually mentioned in the content
-2. Your entire response must be valid JSON that can be parsed by JSON.parse()
+1. ONLY include the "peopleMentioned" property if relevant people are actually mentioned in the content
+2. Your entire response must be valid JSON object that can be parsed by JSON.parse()
 3. Do not wrap the JSON in code blocks or add any explanatory text
 4. Ensure all quotes are properly escaped
 5. Do not include comments in the JSON
@@ -77,24 +99,20 @@ IMPORTANT RULES:
 Webpage content to summarize:
 ${pageContent}
 
-Return only the JSON array:`;
+Return only the JSON object:`;
 
-    try {
-      const rawSummary = await generateContent(prompt);
+  try {
+    const content = await generateContent(apiKey, prompt);
+    const summary = summaryToObject(content);
 
-      return summaryToChildren(rawSummary);
-    } catch (error) {
-      if (error.message.includes("SAFETY")) {
-        return [{ name: "Content may violate content policy." }] ;
-      } else if (error.message.includes("overloaded")) {
-        return [{ name: "The model is overloaded. Please try again later." }];
-      } else {
-        return [{ name: `Error: ${error.message}` }];
-      }
+    return summary
+  } catch (error) {
+    if (error.message.includes("SAFETY")) {
+      return { type: "error", error: "Content may violate content policy." };
+    } else if (error.message.includes("overloaded")) {
+      return { type: "error", error: "The model is overloaded." };
+    } else {
+      return { type: "error", error: `Unexpected error: ${error.message}` };
     }
   }
-
-  return { summarizeWebPage }
 }
-
-export { createWebPageSummarizer };

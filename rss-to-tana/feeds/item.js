@@ -1,3 +1,4 @@
+import { summaryToNodes } from 'summarize-page';
 import { summarizePage } from '../fetcher.js';
 
 function source(feedUrl) {
@@ -75,7 +76,8 @@ async function music(feedUrl, item) {
 }
 
 async function website(feedUrl, item) {
-  const summaryChildren = await summarizePage(item.link);
+  const summary = await summarizePage(item.link);
+
 
   const node = {
     name: item.title,
@@ -91,12 +93,12 @@ async function website(feedUrl, item) {
     ]
   }
 
-  if (summaryChildren) {
+  if (summary.type === "success") {
     node.children.push({
       /* Summary */
       type: "field",
       attributeId: "fvfamJjU6oY5",
-      children: summaryChildren,
+      children: summaryToNodes(summary),
     })
   }
   
