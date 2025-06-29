@@ -143,8 +143,13 @@ async function parseFeed(feed) {
 }
 
 async function parseFeeds() {
+  // Process feeds sequentially to reduce memory pressure
+  // instead of Promise.all which would load all feeds simultaneously
   for (const feed of rssFeeds) {
-    await parseFeed(feed)
+    await parseFeed(feed);
+    
+    // Small delay between feeds to allow garbage collection
+    await new Promise(resolve => setTimeout(resolve, 100));
   }
 }
 
