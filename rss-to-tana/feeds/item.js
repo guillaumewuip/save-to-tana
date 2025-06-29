@@ -1,8 +1,4 @@
-import { createWebPageSummarizer } from 'summarize-page';
-
-import { fetchPageContent } from '../fetcher.js';
-
-const webpageSummarizer = createWebPageSummarizer("AIzaSyBqOeoZSvMNXcu8hWoTFmIswhOfBFZYtzY");
+import { summarizePage } from '../fetcher.js';
 
 function source(feedUrl) {
   return {
@@ -79,11 +75,7 @@ async function music(feedUrl, item) {
 }
 
 async function website(feedUrl, item) {
-  const pageContent = await fetchPageContent(item.link);
-
-  const summaryChildren = pageContent.type === 'success' ? 
-    await webpageSummarizer.summarizeWebPage(pageContent.content) 
-    : null;
+  const summaryChildren = await summarizePage(item.link);
 
   const node = {
     name: item.title,
