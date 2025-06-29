@@ -9,6 +9,9 @@ primary_region = "cdg"
 [build]
 dockerfile = "rss-to-tana/Dockerfile"
 
+[deploy]
+  strategy = "immediate"
+
 [env]
 NODE_ENV = "production"
 
