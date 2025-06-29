@@ -184,16 +184,16 @@ fastify.get('/health', async (req, reply) => {
   return reply.status(200).send({ status: 'ok' });
 })
 
-(async () => {
+const start = async () => {
   try {
     // Start the Fastify server
     await fastify.listen({ port: 3000 });
 
     await initFeedsSync();
-
-    Log.info('Server started on port 3000');
   } catch (error) {
     Log.error('Error starting application:', error);
     process.exit(1);
   }
-})();
+}
+
+start()
