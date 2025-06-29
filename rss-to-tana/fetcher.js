@@ -1,11 +1,12 @@
 import * as htmlparser2 from 'htmlparser2';
 import * as domutils from 'domutils';
 
-import { createWebPageSummarizer } from 'summarize-page';
-
-const webpageSummarizer = createWebPageSummarizer("AIzaSyBqOeoZSvMNXcu8hWoTFmIswhOfBFZYtzY");
-
-export async function summarizePage(url) {
+/**
+ * Fetches a page URL and returns the text content
+ * @param {string} url - The URL to fetch
+ * @returns {Promise<{type: "success", content: string} | {type: "error", error: Error}>}
+ */
+export async function fetchPageContent(url) {
   try {
     // Validate URL
     if (!url || typeof url !== 'string') {
@@ -25,25 +26,28 @@ export async function summarizePage(url) {
 
     clearTimeout(timeoutId);
 
+    // Check if response is ok
     if (!response.ok) {
-      return [{ name: `Error fetching page: ${response.status} ${response.statusText}` }];
+      return { 
+        type: "error", 
+        error: new Error(`HTTP ${response.status}: ${response.statusText}`) 
+      };
     }
 
     const html = await response.text();
     const dom = htmlparser2.parseDocument(html);
     const textContent = domutils.innerText(dom.children);
-    const cleanedContent = textContent.replace(/\s+/g, ' ').trim(); 
+    const cleanedContent = textContent.replace(/\s+/g, ' ').trim(); // Clean up whitespace
 
-    const summaryChildren = await webpageSummarizer.summarizeWebPage(cleanedContent);
-
-    return summaryChildren;
+    return { type: "success", content: cleanedContent };
   } catch (error) {
+    // Handle various error types
     if (error.name === 'AbortError') {
-      return [{ name: "Request timed out" }];
+      return { type: "error", error: new Error('Request timeout') };
     } else if (error.name === 'TypeError' && error.message.includes('fetch')) {
-      return [{ name: `Network error: ${error.message}` }];
+      return { type: "error", error: new Error(`Network error: ${error.message}`) };
     } else {
-      return [{ name: `Unexpected error: ${error.message}` }];
+      return { type: "error", error: new Error(`Unexpected error: ${error.message}`) };
     }
   }
 }
