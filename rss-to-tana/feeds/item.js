@@ -1,5 +1,6 @@
-const { fetchPageContent } = require('./fetcher');
-const { createWebPageSummarizer } = require('summarize-page');
+import { createWebPageSummarizer } from 'summarize-page';
+
+import { fetchPageContent } from '../fetcher.js';
 
 const webpageSummarizer = createWebPageSummarizer("AIzaSyBqOeoZSvMNXcu8hWoTFmIswhOfBFZYtzY");
 
@@ -110,7 +111,7 @@ async function website(feedUrl, item) {
   return node;
 }
 
-const create = async (rssItem, feed) => ({
+export const create = async (rssItem, feed) => ({
   id: rssItem.link,
   title: rssItem.title,
   publishedAt: rssItem.publishedAt,
@@ -118,11 +119,8 @@ const create = async (rssItem, feed) => ({
   feed,
 })
 
-module.exports = {
-  tana: {
+export const tana = {
     album,
     music,
     website,
-  },
-  create,
 }

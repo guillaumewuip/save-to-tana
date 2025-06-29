@@ -1,6 +1,7 @@
-const { createClient } = require('redis');
-const Log = require('./log');
-const crypto = require('crypto')
+import { createClient } from 'redis';
+import crypto from 'crypto';
+
+import * as Log from '../log.js';
 
 const REDIS_URL = `redis://${process.env.REDIS_HOST}`
 
@@ -27,12 +28,12 @@ const storeId = (id) => {
   return `1-${hashedId}`
 }
 
-const initialize = async () => {
+export const initialize = async () => {
   Log.info('Connecting to Redis', REDIS_URL)
   await client.connect();
 }
 
-const savedAlready = async (itemId) => {
+export const savedAlready = async (itemId) => {
   const nbKeysFound = await client.exists(storeId(itemId))
   return nbKeysFound === 1
 }
@@ -48,12 +49,6 @@ const saveItemSaved = async (itemId) => {
   )
 }
 
-const saveItemsSaved = async (itemIds) => {
+export const saveItemsSaved = async (itemIds) => {
   return Promise.all(itemIds.map(saveItemSaved))
-}
-
-module.exports = {
-  initialize,
-  savedAlready,
-  saveItemsSaved,
 }

@@ -1,12 +1,12 @@
-const htmlparser2 = require('htmlparser2');
-const domutils = require('domutils');
+import * as htmlparser2 from 'htmlparser2';
+import * as domutils from 'domutils';
 
 /**
  * Fetches a page URL and returns the text content
  * @param {string} url - The URL to fetch
  * @returns {Promise<{type: "success", content: string} | {type: "error", error: Error}>}
  */
-async function fetchPageContent(url) {
+export async function fetchPageContent(url) {
   try {
     // Validate URL
     if (!url || typeof url !== 'string') {
@@ -51,5 +51,3 @@ async function fetchPageContent(url) {
     }
   }
 }
-
-module.exports = { fetchPageContent };

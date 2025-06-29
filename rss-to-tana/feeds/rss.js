@@ -1,10 +1,10 @@
-const htmlparser2 = require('htmlparser2')
+import * as htmlparser2 from 'htmlparser2';
 
 function parsePubDate(pubDateString) {
   return new Date(pubDateString)
 }
 
-async function parse(feedUrl) {
+export async function parse(feedUrl) {
   const response = await fetch(feedUrl)
 
   if (!response.ok) {
@@ -25,8 +25,4 @@ async function parse(feedUrl) {
   } catch (err) {
     return []
   }
-}
-
-module.exports = {
-  parse,
 }

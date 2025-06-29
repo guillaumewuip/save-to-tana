@@ -1,6 +1,6 @@
 {
   "name": "rss-to-tana",
-  "main": "index.js",
+  "type": "module",
   "dependencies": {
     "domutils": "^3.2.2",
     "fastify": "^4.0.0",

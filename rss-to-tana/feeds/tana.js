@@ -1,7 +1,8 @@
-const Log = require('./log');
-const API_KEY = process.env.TANA_API_KEY
+import * as Log from '../log.js';
 
-const Store = require('./store');
+import * as Store from './store.js';
+
+const API_KEY = process.env.TANA_API_KEY
 
 function postItems(items) {
   // Sending all given nodes at once as we think we won't have more than 100
@@ -64,11 +65,9 @@ setInterval(
   20 * 1000
 )
 
-function saveItems(items) {
+export function saveItems(items) {
   if (items.length) {
     queue.push(...items)
     Log.info(`Added ${items.length} items to queue (${queue.length} items)`)
   }
 }
-
-module.exports = { saveItems };
