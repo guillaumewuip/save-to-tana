@@ -14,10 +14,9 @@ strategy = "immediate"
 
 [env]
 NODE_ENV = "production"
-
+SYNC_FEEDS = true
 
 [[services]]
-  http_checks = []
   internal_port = 3000
   auto_stop_machines = "off"
   auto_start_machines = false
@@ -30,11 +29,14 @@ NODE_ENV = "production"
     handlers = ["tls", "http"]
     port = 443
 
-  [[http_service.checks]]
+[checks]
+  [checks.health]
     grace_period = "10s"
     interval = "30s"
     method = "GET"
     timeout = "5s"
     path = "/health"
+    port = 80
+    type = "http"
 
 swap_size_mb = 512
