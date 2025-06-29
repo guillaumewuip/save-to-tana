@@ -117,7 +117,7 @@ async function filterSavedItems(feed, items) {
       }
     }
   } catch (error) {
-    Log.error(`Error filtering items saved already`, feed.url, error);
+    Log.error(`Error filtering items saved already`, feed.url, items, error);
 
     return []
   }
