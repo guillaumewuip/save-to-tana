@@ -41,24 +41,25 @@ function postItems(items) {
   })
 }
 
+const BATCH_SIZE = 100;
 const queue = []
 
 // every 20s, we post the queue
 setInterval(
   () => {
     if (queue.length) {
-      Log.debug(`Posting ${queue.length} items to Tana`)
+      Log.debug(`Posting ${Math.min(queue.length, BATCH_SIZE)} items to Tana`)
 
-      // extracting all items from the queue
-      const items = queue.splice(0, Infinity)
+      // extracting items from the queue in batches
+      const items = queue.splice(0, BATCH_SIZE)
 
       postItems(items)
         .then(() => Log.info(`${items.length} items saved to Tana`))
         .then(() => Store.saveItemsSaved(items.map(item => item.id)))
-        // in case of failure, we put back items in the queue
+        // in case of failure, we put back items at the beginning of the queue
         .catch(error => {
           Log.error('Error in saving items', error);
-          queue.push(...items)
+          queue.unshift(...items)
         });
     }
   },
