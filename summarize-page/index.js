@@ -2,7 +2,7 @@ function summaryToChildren(data) {
   try {
     return JSON.parse(data)
   } catch (error) {
-    console.error('Error parsing JSON summary:', error, data);
+    console.error('Error parsing JSON summary:', error);
     return [{ name: "Error parsing JSON summary" }];
   }
 }
