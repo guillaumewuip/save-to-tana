@@ -1,4 +1,5 @@
 const cron = require('node-cron');
+const fastify = require('fastify')({ logger: true });
 
 const Store = require('./store');
 const Item = require('./item');
@@ -166,11 +167,33 @@ async function scheduleFeeds() {
 //    Items left are considered new items
 // 3. Pushes the new items to the save queue
 // 4. Once saved, saves the items in the redis
-(async () => {
+async function initFeedsSync() {
   await Store.initialize()
 
   await scheduleFeeds()
 
   // we parse all feeds at app startup
   await parseFeeds()
+}
+
+fastify.get('/', async () => {
+  return { hello: 'world' }
+})
+
+fastify.get('/health', async (req, reply) => {
+  return reply.status(200).send({ status: 'ok' });
+})
+
+(async () => {
+  try {
+    // Start the Fastify server
+    await fastify.listen({ port: 3000 });
+
+    await initFeedsSync();
+
+    Log.info('Server started on port 3000');
+  } catch (error) {
+    Log.error('Error starting application:', error);
+    process.exit(1);
+  }
 })();
