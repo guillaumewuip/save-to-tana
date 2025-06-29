@@ -20,12 +20,5 @@ SYNC_FEEDS = true
   internal_port = 8080
   auto_stop_machines = "off"
   auto_start_machines = false
-  
-  [[http_service.checks]]
-    grace_period = "10s"
-    interval = "30s"
-    method = "GET"
-    timeout = "5s"
-    path = "/health"
 
 swap_size_mb = 512
