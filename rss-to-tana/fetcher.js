@@ -1,7 +1,7 @@
 import * as htmlparser2 from 'htmlparser2';
 import * as domutils from 'domutils';
 
-import { summarizeWebPage  } from 'summarize-page';
+import { summarizeWebPage } from 'summarize-page';
 
 export async function summarizePage(url) {
   try {

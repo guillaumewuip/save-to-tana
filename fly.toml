@@ -2,14 +2,16 @@ app = "rss-to-tana"
 primary_region = "cdg"
 
 [build]
-dockerfile = "rss-to-tana/Dockerfile"
+  dockerfile = "rss-to-tana/Dockerfile"
 
 [deploy]
-strategy = "immediate"
+  strategy = "immediate"
 
 [env]
-NODE_ENV = "production"
-SYNC_FEEDS = true
+  NODE_ENV = "production"
+  SYNC_FEEDS = true
+  NODE_OPTIONS = "--max-old-space-size=256"
+
 
 [http_service]
   internal_port = 8080
