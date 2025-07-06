@@ -26,8 +26,7 @@ export function summaryToNodes(data) {
 }
 
 export function summaryToTanaPaste(data) {
-  return `%%tana%%
-- ${data.oneLine}
+  return `- ${data.oneLine}
 ${data.details.map(detail => `  - ${detail}`).join('\n')}
 ${data.peopleMentioned.length > 0 ? `- People Mentioned:\n${data.peopleMentioned.map(person => `  - ${person}`).join('\n')}` : ''}
 `;
