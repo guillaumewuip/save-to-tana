@@ -10,7 +10,7 @@ primary_region = "cdg"
 [env]
   NODE_ENV = "production"
   SYNC_FEEDS = true
-  NODE_OPTIONS = "--max-old-space-size=256"
+  NODE_OPTIONS = "--max-old-space-size=356"
 
 
 [http_service]
