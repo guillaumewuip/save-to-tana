@@ -1,5 +1,5 @@
-import { summaryToNodes } from 'summarize-page';
-import { summarizePage } from '../fetcher.js';
+// import { summaryToNodes } from 'summarize-page';
+// import { summarizePage } from '../fetcher.js';
 
 function source(feedUrl) {
   return {
@@ -76,8 +76,7 @@ async function music(feedUrl, item) {
 }
 
 async function website(feedUrl, item) {
-  const summary = await summarizePage(item.link);
-
+  // const summary = await summarizePage(item.link);
 
   const node = {
     name: item.title,
@@ -89,19 +88,19 @@ async function website(feedUrl, item) {
     ],
     children: [
       url(item),
-      source(feedUrl),    
+      source(feedUrl),
     ]
   }
 
-  if (summary.type === "success") {
-    node.children.push({
-      /* Summary */
-      type: "field",
-      attributeId: "fvfamJjU6oY5",
-      children: summaryToNodes(summary),
-    })
-  }
-  
+  // if (summary.type === "success") {
+  //   node.children.push({
+  //     /* Summary */
+  //     type: "field",
+  //     attributeId: "fvfamJjU6oY5",
+  //     children: summaryToNodes(summary),
+  //   })
+  // }
+
   return node;
 }
 
@@ -114,7 +113,7 @@ export const create = async (rssItem, feed) => ({
 })
 
 export const tana = {
-    album,
-    music,
-    website,
+  album,
+  music,
+  website,
 }

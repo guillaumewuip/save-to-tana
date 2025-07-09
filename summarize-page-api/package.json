@@ -1,0 +1,11 @@
+{
+  "name": "summarize-page-api",
+  "type": "module",
+  "dependencies": {
+    "fastify": "^4.0.0"
+  },
+  "scripts": {
+    "start": "node index.js"
+  },
+  "private": true
+}

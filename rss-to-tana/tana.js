@@ -1,4 +1,4 @@
-import * as Log from '../log.js';
+import * as Log from './log.js';
 
 import * as Store from './store.js';
 
@@ -34,11 +34,11 @@ function postItems(items) {
     },
     body: JSON.stringify(payload)
   })
-  .then(response => {
-    if (!response.ok || response.status !== 200) {
-      throw new Error(`Error saving nodes in Tana: ${response.status} ${response.statusText}`)
-    }
-  })
+    .then(response => {
+      if (!response.ok || response.status !== 200) {
+        throw new Error(`Error saving nodes in Tana: ${response.status} ${response.statusText}`)
+      }
+    })
 }
 
 const BATCH_SIZE = 100;

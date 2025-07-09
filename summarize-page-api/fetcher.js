@@ -7,7 +7,7 @@ export async function summarizePage(url) {
   try {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 10000);
-    
+
     const response = await fetch(url, {
       signal: controller.signal,
       headers: {
@@ -24,7 +24,7 @@ export async function summarizePage(url) {
     const html = await response.text();
     const dom = htmlparser2.parseDocument(html);
     const textContent = domutils.innerText(dom.children);
-    const cleanedContent = textContent.replace(/\s+/g, ' ').trim(); 
+    const cleanedContent = textContent.replace(/\s+/g, ' ').trim();
 
     return await summarizeWebPage(process.env.GEMINI_API_KEY, cleanedContent);
   } catch (error) {
