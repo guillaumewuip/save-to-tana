@@ -30,11 +30,6 @@ const rssFeeds = [
     toTana: Item.tana.album,
   },
   {
-    url: 'https://www.prun.net/emission/8MNV-iss/rss',
-    cron: schedules.twiceAtNight,
-    toTana: Item.tana.music,
-  },
-  {
     url: 'https://stnt.org/rss.xml',
     cron: schedules.twiceAtNight,
     toTana: Item.tana.album,
@@ -57,17 +52,6 @@ const rssFeeds = [
     cron: schedules.everyHour,
     toTana: Item.tana.website,
   },
-
-  // Design
-
-  // Personal Development
-
-  // Others
-  {
-    url: 'http://www.lesothers.com/feed/',
-    cron: schedules.twiceAtNight,
-    toTana: Item.tana.website,
-  }
 ];
 
 function dateDiffInDays(a, b) {
