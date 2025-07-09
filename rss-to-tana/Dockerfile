@@ -5,12 +5,10 @@ WORKDIR /app
 COPY package*.json ./
 
 COPY rss-to-tana/package*.json ./rss-to-tana/
-COPY summarize-page/package*.json ./summarize-page/
 
 RUN npm ci --workspaces
 
 COPY rss-to-tana/ ./rss-to-tana/
-COPY summarize-page/ ./summarize-page/
 
 WORKDIR /app/rss-to-tana
 
