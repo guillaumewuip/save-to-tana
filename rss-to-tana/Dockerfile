@@ -4,7 +4,7 @@ WORKDIR /app
 
 COPY package*.json ./
 
-COPY rss-to-tana/package*.json ./rss-to-tana/
+COPY rss-to-tana/package.json ./rss-to-tana/
 
 RUN npm ci --workspaces
 
