@@ -5,6 +5,8 @@ WORKDIR /app
 COPY package-lock.json ./
 COPY **/package.json ./*/
 
+RUN ls -all
+
 RUN npm ci --workspaces
 
 COPY . .
