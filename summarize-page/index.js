@@ -47,8 +47,8 @@ export async function summarizePageContent(pageContent) {
 export function summaryToNodes(data) {
   const result = [
     {
-      name: data.oneLine,
-      children: data.details.map(detail => ({ name: detail }))
+      name: data.summary.oneLine,
+      children: data.summary.details.map(detail => ({ name: detail }))
     },
     
   ];
@@ -65,8 +65,8 @@ export function summaryToNodes(data) {
 
 export function summaryToTanaPaste(data) {
   const result = `%%tana%%
-  - ${data.oneLine}
-  ${data.details.map(detail => `  - ${detail}`).join('\n')}
+  - ${data.summary.oneLine}
+  ${data.summary.details.map(detail => `  - ${detail}`).join('\n')}
 `;
 
   if (data.peopleMentioned && data.peopleMentioned.length > 0) {
