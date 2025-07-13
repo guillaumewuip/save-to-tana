@@ -9,6 +9,10 @@ COPY summarize-page-api/package.json ./summarize-page-api/
 
 RUN npm ci --workspaces
 
+RUN ls -all
+RUN ls -all node_modules
+RUN ls -all node_modules/fetcher
+
 COPY summarize-page-api/ ./summarize-page-api/
 
 WORKDIR /app/summarize-page-api
