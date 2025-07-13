@@ -2,7 +2,7 @@ import Fastify from 'fastify';
 import { createGoogleGenerativeAI } from '@ai-sdk/google';
 import { generateObject } from 'ai';
 import { z } from 'zod';
-import { summarizePage } from './fetcher.js';
+import { fetchPageContent } from 'fetcher';
 
 const fastify = Fastify({
   logger: true
@@ -32,15 +32,14 @@ fastify.post('/summarize-page', async (request, reply) => {
 
     const { url } = validation.data;
 
-    // Fetch and parse the web page content
-    const pageContent = await summarizePage(url);
+    const page = await fetchPageContent(url);
 
     const { object: summaryResult } = await generateObject({
       model,
       schema: SummarySchema,
       prompt: `Please provide a concise and informative summary of the following web page content. Focus on the main points and key information:
 
-${pageContent.slice(0, 10000)}` // Limit content to avoid token limits
+${page.slice(0, 10000)}` // Limit content to avoid token limits
     });
 
     return reply.send({

@@ -1,7 +1,7 @@
 import * as htmlparser2 from 'htmlparser2';
 import * as domutils from 'domutils';
 
-export async function summarizePage(url) {
+export async function fetchPageContent(url) {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 10000);
 
