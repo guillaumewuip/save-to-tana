@@ -1,5 +1,5 @@
-// import { summaryToNodes } from 'summarize-page';
-// import { summarizePage } from '../fetcher.js';
+import { fetchPageContent } from 'fetcher';
+import { summarizePageContent, summaryToNodes } from 'summarize-page';
 
 function source(feedUrl) {
   return {
@@ -76,8 +76,6 @@ async function music(feedUrl, item) {
 }
 
 async function website(feedUrl, item) {
-  // const summary = await summarizePage(item.link);
-
   const node = {
     name: item.title,
     supertags: [
@@ -92,16 +90,27 @@ async function website(feedUrl, item) {
     ]
   }
 
-  // if (summary.type === "success") {
-  //   node.children.push({
-  //     /* Summary */
-  //     type: "field",
-  //     attributeId: "fvfamJjU6oY5",
-  //     children: summaryToNodes(summary),
-  //   })
-  // }
+  try {
+    const page = await fetchPageContent(item.link);
+    const summary = await summarizePageContent(page);
 
-  return node;
+    node.children.push({
+      /* Summary */
+      type: 'field',
+      attributeId: 'fvfamJjU6oY5', 
+       children: summaryToNodes(summary),
+    })
+
+    return node
+  } catch (error) {
+    node.children.push({
+      type: 'field',
+      attributeId: 'fvfamJjU6oY5',
+      children: [{name: `Error summarizing page: ${error.message}`}]
+    });
+    
+    return node
+  }
 }
 
 export const create = async (rssItem, feed) => ({

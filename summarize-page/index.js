@@ -43,3 +43,35 @@ export async function summarizePageContent(pageContent) {
 
   return summaryResult
 }
+
+export function summaryToNodes(data) {
+  const result = [
+    {
+      name: data.oneLine,
+      children: data.details.map(detail => ({ name: detail }))
+    },
+    
+  ];
+
+  if (data.peopleMentioned && data.peopleMentioned.length > 0) {
+    result.push({
+      name: 'People Mentioned',
+      children: data.peopleMentioned.map(person => ({ name: person }))
+    });
+  }
+
+  return result
+}
+
+export function summaryToTanaPaste(data) {
+  const result = `%%tana%%
+  - ${data.oneLine}
+  ${data.details.map(detail => `  - ${detail}`).join('\n')}
+`;
+
+  if (data.peopleMentioned && data.peopleMentioned.length > 0) {
+    result += `\n- People Mentioned:\n${data.peopleMentioned.map(person => `  - ${person}`).join('\n')}`;
+  }
+
+  return result;
+}
