@@ -3,7 +3,7 @@ FROM node:24-alpine
 WORKDIR /app
 
 COPY package-lock.json ./
-COPY **/package.json ./
+COPY **/package.json ./*/
 
 RUN npm ci --workspaces
 
