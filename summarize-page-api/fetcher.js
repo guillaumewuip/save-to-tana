@@ -1,10 +1,7 @@
 import * as htmlparser2 from 'htmlparser2';
 import * as domutils from 'domutils';
 
-import { summarizeWebPage } from 'summarize-page';
-
 export async function summarizePage(url) {
-  try {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 10000);
 
@@ -18,7 +15,7 @@ export async function summarizePage(url) {
     clearTimeout(timeoutId);
 
     if (!response.ok) {
-      return [{ name: `Error fetching page: ${response.status} ${response.statusText}` }];
+      throw new Error(`Failed to fetch page: ${response.status} ${response.statusText}`);
     }
 
     const html = await response.text();
@@ -26,14 +23,5 @@ export async function summarizePage(url) {
     const textContent = domutils.innerText(dom.children);
     const cleanedContent = textContent.replace(/\s+/g, ' ').trim();
 
-    return await summarizeWebPage(process.env.GEMINI_API_KEY, cleanedContent);
-  } catch (error) {
-    if (error.name === 'AbortError') {
-      return [{ name: "Request timed out" }];
-    } else if (error.name === 'TypeError' && error.message.includes('fetch')) {
-      return [{ name: `Network error: ${error.message}` }];
-    } else {
-      return [{ name: `Unexpected error: ${error.message}` }];
-    }
-  }
+    return cleanedContent
 }
