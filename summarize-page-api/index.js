@@ -2,7 +2,7 @@ import Fastify from 'fastify';
 
 import { z } from 'zod';
 import { fetchPageContent } from 'fetcher';
-import { summarizePageContent } from 'summarize-page';
+import { summarizePageContent, summaryToTanaPaste } from 'summarize-page';
 
 const fastify = Fastify({
   logger: true
@@ -12,7 +12,7 @@ const RequestBodySchema = z.object({
   url: z.string().url('Must be a valid URL')
 });
 
-fastify.post('/summarize-page', async (request, reply) => {
+fastify.post('/summarize-page-to-tana', async (request, reply) => {
   try {
     const validation = RequestBodySchema.safeParse(request.body);
     if (!validation.success) {
@@ -25,9 +25,9 @@ fastify.post('/summarize-page', async (request, reply) => {
     const { url } = validation.data;
 
     const page = await fetchPageContent(url);
+    const summary = await summarizePageContent(page);
 
-    const summaryResult = await summarizePageContent(page);
-    return reply.send(summaryResult); // TODO tana output
+    return reply.send(summaryToTanaPaste(summary));
   } catch (error) {
     fastify.log.error(error);
     
