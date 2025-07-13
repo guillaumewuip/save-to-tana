@@ -64,13 +64,13 @@ export function summaryToNodes(data) {
 }
 
 export function summaryToTanaPaste(data) {
-  const result = `%%tana%%
+  let result = `%%tana%%
   - ${data.summary.oneLine}
-  ${data.summary.details.map(detail => `  - ${detail}`).join('\n')}
+${data.summary.details.map(detail => `   - ${detail}`).join('\n')}
 `;
 
   if (data.peopleMentioned && data.peopleMentioned.length > 0) {
-    result += `\n- People Mentioned:\n${data.peopleMentioned.map(person => `  - ${person}`).join('\n')}`;
+    result += `  - People Mentioned:\n${data.peopleMentioned.map(person => `    - ${person}`).join('\n')}`;
   }
 
   return result;
