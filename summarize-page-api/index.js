@@ -1,19 +1,11 @@
 import Fastify from 'fastify';
-import { createGoogleGenerativeAI } from '@ai-sdk/google';
-import { generateObject } from 'ai';
+
 import { z } from 'zod';
 import { fetchPageContent } from 'fetcher';
+import { summarizePageContent } from 'summarize-page';
 
 const fastify = Fastify({
   logger: true
-});
-
-const google = createGoogleGenerativeAI({
-  apiKey: process.env.GEMINI_API_KEY
-});
-const model = google('gemini-2.5-flash');
-const SummarySchema = z.object({
-  summary: z.string().describe('A concise summary of the web page content')
 });
 
 const RequestBodySchema = z.object({
@@ -34,18 +26,8 @@ fastify.post('/summarize-page', async (request, reply) => {
 
     const page = await fetchPageContent(url);
 
-    const { object: summaryResult } = await generateObject({
-      model,
-      schema: SummarySchema,
-      prompt: `Please provide a concise and informative summary of the following web page content. Focus on the main points and key information:
-
-${page.slice(0, 10000)}` // Limit content to avoid token limits
-    });
-
-    return reply.send({
-      summary: summaryResult.summary
-    });
-
+    const summaryResult = await summarizePageContent(page);
+    return reply.send(summaryResult); // TODO tana output
   } catch (error) {
     fastify.log.error(error);
     
@@ -55,7 +37,6 @@ ${page.slice(0, 10000)}` // Limit content to avoid token limits
   }
 });
 
-// Start the server
 const start = async () => {
   try {
     // Check if API key is provided

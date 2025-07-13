@@ -5,6 +5,7 @@ WORKDIR /app
 COPY package*.json ./
 
 COPY fetcher/package.json ./fetcher/
+COPY summarize-page/package.json ./summarize-page/
 COPY summarize-page-api/package.json ./summarize-page-api/
 
 RUN npm ci --workspaces
