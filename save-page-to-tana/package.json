@@ -1,0 +1,13 @@
+{
+  "name": "save-page-to-tana",
+  "type": "module",
+  "scripts": {
+    "build": "node build.js"
+  },
+  "devDependencies": {
+    "esbuild": "^0.25.8"
+  },
+  "dependencies": {
+    "summarize-page": "*"
+  }
+}

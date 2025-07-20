@@ -12,14 +12,14 @@
     "https://generativeai.googleapis.com/*"
   ],
   "action": {
-    "default_popup": "popup.html"
+    "default_popup": "src/popup/index.html"
   },
   "options_ui": {
-    "page": "options.html",
+    "page": "src/options/index.html",
     "open_in_tab": false
   },
   "background": {
-    "service_worker": "background.js",
+    "service_worker": "dist/background.js",
     "type": "module"
   },
   "icons": {

@@ -1,4 +1,4 @@
-import { summaryToNodes, summarizeWebPage } from './summarize-page.js';
+import { summaryToNodes, summarizePageContent } from 'summarize-page';
 
 async function addItemsToQueue(items, queueName) {
   const result = await chrome.storage.local.get([queueName])
@@ -86,12 +86,12 @@ async function postNodes(nodes) {
 async function savePage({ title, url, content }) {
   const { GEMINI_API_KEY } = await chrome.storage.sync.get(['GEMINI_API_KEY'])
 
-  const summary = await summarizeWebPage(GEMINI_API_KEY, `
+  const summary = await summarizePageContent(`
 PAGE TITLE: ${title}
 PAGE URL: ${url}
 PAGE CONTENT: 
 ${content}
-`);
+`, GEMINI_API_KEY);
 
   const nodes = [
     {
@@ -250,7 +250,7 @@ chrome.runtime.onMessage.addListener((message) => {
         chrome.scripting
           .executeScript({
             target: { tabId: activeTab.id },
-            files: ["content_script.js"],
+            files: ["src/content_script/index.js"],
           })
       });
       return

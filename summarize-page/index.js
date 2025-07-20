@@ -2,20 +2,20 @@ import { z } from 'zod';
 import { createGoogleGenerativeAI } from '@ai-sdk/google';
 import { generateObject } from 'ai';
 
-const google = createGoogleGenerativeAI({
-  apiKey: process.env.GEMINI_API_KEY
-});
-const model = google('gemini-2.5-flash');
+export async function summarizePageContent(pageContent, apiKey) {
+  const google = createGoogleGenerativeAI({
+    apiKey: apiKey
+  });
+  const model = google('gemini-2.5-flash');
 
-const SummarySchema = z.object({
-  summary: z.object({
-    oneLine: z.string().describe('One line summary of what the page is about'),
-    details: z.array(z.string()).describe('List of key details about the page content')
-  }),
-  peopleMentioned: z.array(z.string()).optional().describe('List of people mentioned in the content, if any')
-});
+  const SummarySchema = z.object({
+    summary: z.object({
+      oneLine: z.string().describe('One line summary of what the page is about'),
+      details: z.array(z.string()).describe('List of key details about the page content')
+    }),
+    peopleMentioned: z.array(z.string()).optional().describe('List of people mentioned in the content, if any')
+  });
 
-export async function summarizePageContent(pageContent) {
   const { object: summaryResult } = await generateObject({
       model,
       schema: SummarySchema,
