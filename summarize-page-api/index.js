@@ -25,7 +25,7 @@ fastify.post('/summarize-page-to-tana', async (request, reply) => {
     const { url } = validation.data;
 
     const page = await fetchPageContent(url);
-    const summary = await summarizePageContent(page);
+    const summary = await summarizePageContent(page, process.env.GEMINI_API_KEY);
 
     return reply.send(summaryToTanaPaste(summary));
   } catch (error) {
