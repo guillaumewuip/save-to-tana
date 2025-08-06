@@ -157,6 +157,12 @@ async function scheduleFeeds() {
 // 3. Pushes the new items to the save queue
 // 4. Once saved, saves the items in the redis
 async function start() {
+  // Check if API key is provided
+  if (!process.env.GEMINI_API_KEY) {
+    console.error('GEMINI_API_KEY environment variable is required');
+    process.exit(1);
+  }
+
   await Store.initialize()
 
   await scheduleFeeds()

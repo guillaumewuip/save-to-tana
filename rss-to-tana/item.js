@@ -92,7 +92,7 @@ async function website(feedUrl, item) {
 
   try {
     const page = await fetchPageContent(item.link);
-    const summary = await summarizePageContent(page);
+    const summary = await summarizePageContent(page, process.env.GEMINI_API_KEY);
 
     node.children.push({
       /* Summary */
