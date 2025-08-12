@@ -53,6 +53,10 @@ function postNodes(nodes) {
     body: JSON.stringify(payload)
   })
     .then(response => {
+      if(response.ok) {
+        Log.info(`${nodes.length} items saved to Tana`)
+      }
+
       if (!response.ok || response.status !== 200) {
         throw new Error(`Error saving nodes in Tana: ${response.status} ${response.statusText}`)
       }
@@ -73,7 +77,6 @@ setInterval(
 
       filterSavedNodes(nodes)
         .then(postNodes)
-        .then(() => Log.info(`${nodes.length} items saved to Tana`))
         .then(() => Store.saveItemsSaved(nodes.map(node => node.externalId)))
         // in case of failure, we put back items at the beginning of the queue
         .catch(error => {
