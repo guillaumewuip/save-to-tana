@@ -2,10 +2,10 @@
   "name": "rss-to-tana",
   "type": "module",
   "dependencies": {
-    "domutils": "^3.2.2",
-    "htmlparser2": "^9.0.0",
     "node-cron": "^3.0.2",
-    "redis": "^4.6.7"
+    "store": "*",
+    "tana": "*",
+    "log": "*"
   },
   "scripts": {
     "start": "node index.js"

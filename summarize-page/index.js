@@ -50,7 +50,6 @@ export function summaryToNodes(data) {
       name: data.summary.oneLine,
       children: data.summary.details.map(detail => ({ name: detail }))
     },
-    
   ];
 
   if (data.peopleMentioned && data.peopleMentioned.length > 0) {

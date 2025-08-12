@@ -1,7 +1,7 @@
 import { createClient } from 'redis';
 import crypto from 'crypto';
 
-import * as Log from './log.js';
+import * as Log from 'log';
 
 const REDIS_URL = process.env.REDIS_URL
 

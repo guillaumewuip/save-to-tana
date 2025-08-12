@@ -1,0 +1,10 @@
+{
+  "name": "store",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "dependencies": {
+    "redis": "^4.6.7"
+  }
+}

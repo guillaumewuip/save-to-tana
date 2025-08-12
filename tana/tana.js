@@ -1,6 +1,6 @@
-import * as Log from './log.js';
+import * as Log from 'log';
 
-import * as Store from './store.js';
+import * as Store from 'store';
 
 const API_KEY = process.env.TANA_API_KEY
 

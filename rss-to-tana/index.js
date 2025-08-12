@@ -1,10 +1,9 @@
 import cron from 'node-cron';
 
-import * as Log from './log.js';
+import * as Log from 'log';
 
-import * as Store from './store.js';
-import * as Item from './item.js';
-import * as Tana from './tana.js';
+import * as Store from 'store';
+import * as Tana from 'tana';
 import * as RSS from './rss.js';
 
 const schedules = {
@@ -17,40 +16,40 @@ const rssFeeds = [
   {
     url: 'https://cmd.wuips.com/rss/feed.xml',
     cron: schedules.everyHour,
-    toTana: Item.tana.music,
+    toTana: Tana.tana.music,
   },
   {
     url: 'https://pitchfork.com/feed/reviews/best/albums/rss',
     cron: schedules.twiceAtNight,
-    toTana: Item.tana.album,
+    toTana: Tana.tana.album,
   },
   {
     url: 'https://pitchfork.com/feed/reviews/best/reissues/rss',
     cron: schedules.twiceAtNight,
-    toTana: Item.tana.album,
+    toTana: Tana.tana.album,
   },
   {
     url: 'https://stnt.org/rss.xml',
     cron: schedules.twiceAtNight,
-    toTana: Item.tana.album,
+    toTana: Tana.tana.album,
   },
 
   // Tech
   {
     url: 'https://leaddev.com/content-piece-and-series/rss.xml',
     cron: schedules.twiceAtNight,
-    toTana: Item.tana.website,
+    toTana: Tana.tana.website,
   },
   {
     // Thoughtworks Technology Podcast
     url: 'http://feeds.soundcloud.com/users/soundcloud:users:94605026/sounds.rss',
     cron: schedules.twiceAtNight,
-    toTana: Item.tana.website,
+    toTana: Tana.tana.website,
   },
   {
     url: 'https://lethain.com/feeds.xml',
     cron: schedules.everyHour,
-    toTana: Item.tana.website,
+    toTana: Tana.tana.website,
   },
 ];
 
@@ -69,7 +68,7 @@ async function extractItems(feed) {
   try {
     const items = await RSS.parse(feed.url);
 
-    return await Promise.all(items.map(rssItem => Item.create(rssItem, feed)))
+    return await Promise.all(items.map(rssItem => Tana.create(rssItem, feed)))
   } catch (error) {
     Log.error(`Error extracting items`, feed.url, error);
 

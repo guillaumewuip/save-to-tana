@@ -108,7 +108,7 @@ async function website(feedUrl, item) {
       attributeId: 'fvfamJjU6oY5',
       children: [{name: `Error summarizing page: ${error.message}`}]
     });
-    
+
     return node
   }
 }

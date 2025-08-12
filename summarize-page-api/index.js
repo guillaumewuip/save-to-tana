@@ -30,7 +30,7 @@ fastify.post('/summarize-page-to-tana', async (request, reply) => {
     return reply.send(summaryToTanaPaste(summary));
   } catch (error) {
     fastify.log.error(error);
-    
+
     return reply.status(500).send({
       error: `Internal server error occurred while processing the request: ${error.message}`
     });
