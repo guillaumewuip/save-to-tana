@@ -22,9 +22,6 @@ const storeId = (id) => {
 
   // change the prefix to trash all existing ids
   // we can also connect to redis and flush the db
-  //
-  //   flyctl redis connect
-  //   > FLUSHALL
   return `1-${hashedId}`
 }
 

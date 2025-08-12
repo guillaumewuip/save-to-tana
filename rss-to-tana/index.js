@@ -73,10 +73,7 @@ async function extractItems(feed) {
     return await Promise.all(items
         .filter(rssItem => dateDiffInDays(rssItem.publishedAt, now) < 3) // keep only recent items
         .map(async rssItem => ({
-          id: rssItem.link,
-          title: rssItem.title,
-          node: await feed.createNode(feed.url, rssItem.link, rssItem),
-          feed,
+          node: await feed.createNode(rssItem.link, rssItem),
         })))
   } catch (error) {
     Log.error(`Error extracting items`, feed.url, error);

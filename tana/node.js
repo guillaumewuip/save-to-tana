@@ -41,7 +41,7 @@ function createUrl(url) {
   }
 }
 
-export async function createAlbum(url, externalId, item) {
+export async function createAlbum(externalId, item) {
   return {
     externalId,
     name: item.title,
@@ -59,7 +59,7 @@ export async function createAlbum(url, externalId, item) {
   }
 }
 
-export async function createMusic(url, externalId, item) {
+export async function createMusic(externalId, item) {
   return {
     externalId,
     name: item.title,
@@ -77,7 +77,7 @@ export async function createMusic(url, externalId, item) {
   }
 }
 
-export async function createWebsite(url, externalId, item) {
+export async function createWebsite(externalId, item) {
   const node = {
     externalId,
     name: item.title,
@@ -116,7 +116,7 @@ export async function createWebsite(url, externalId, item) {
   }
 }
 
-export async function createActivity(url, externalId, activity) {
+export async function createActivity(externalId, activity) {
   return {
     externalId,
     name: activity.name,

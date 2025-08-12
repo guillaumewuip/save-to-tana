@@ -16,7 +16,7 @@ async function filterSavedNodes(nodes) {
       }
     }
   } catch (error) {
-    Log.error(`Error filtering items saved already`, feed.url, items, error);
+    Log.error(`Error filtering items saved already`, error);
 
     return []
   }
@@ -74,11 +74,11 @@ setInterval(
       filterSavedNodes(nodes)
         .then(postNodes)
         .then(() => Log.info(`${nodes.length} items saved to Tana`))
-        .then(() => Store.saveItemsSaved(nodes.map(item => item.id)))
+        .then(() => Store.saveItemsSaved(nodes.map(node => node.externalId)))
         // in case of failure, we put back items at the beginning of the queue
         .catch(error => {
           Log.error('Error in saving items', error);
-          queue.unshift(...items)
+          queue.unshift(...nodes)
         });
     }
   },
