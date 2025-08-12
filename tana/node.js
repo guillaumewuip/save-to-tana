@@ -1,14 +1,14 @@
 import { fetchPageContent } from 'fetcher';
 import { summarizePageContent, summaryToNodes } from 'summarize-page';
 
-function source(feedUrl) {
+function source(url) {
   return {
     /* Source */
     type: "field",
     attributeId: "SalqarOgiv",
     children: [
       {
-        name: `RSS to Tana - ${feedUrl}`
+        name: `RSS to Tana - ${url}`
       }
     ]
   }
@@ -41,7 +41,7 @@ function url(item) {
   }
 }
 
-async function album(feedUrl, item) {
+export async function createAlbum(url, item) {
   return {
     name: item.title,
     supertags: [
@@ -53,12 +53,12 @@ async function album(feedUrl, item) {
     children: [
       title(item),
       url(item),
-      source(feedUrl)
+      source(url)
     ]
   }
 }
 
-async function music(feedUrl, item) {
+export async function createMusic(url, item) {
   return {
     name: item.title,
     supertags: [
@@ -70,12 +70,12 @@ async function music(feedUrl, item) {
     children: [
       title(item),
       url(item),
-      source(feedUrl)
+      source(url)
     ]
   }
 }
 
-async function website(feedUrl, item) {
+export async function createWebsite(url, item) {
   const node = {
     name: item.title,
     supertags: [
@@ -86,7 +86,7 @@ async function website(feedUrl, item) {
     ],
     children: [
       url(item),
-      source(feedUrl),
+      source(url),
     ]
   }
 
@@ -111,18 +111,4 @@ async function website(feedUrl, item) {
 
     return node
   }
-}
-
-export const create = async (rssItem, feed) => ({
-  id: rssItem.link,
-  title: rssItem.title,
-  publishedAt: rssItem.publishedAt,
-  tanaNode: await feed.toTana(feed.url, rssItem),
-  feed,
-})
-
-export const tana = {
-  album,
-  music,
-  website,
 }

@@ -4,14 +4,12 @@ import * as Store from 'store';
 
 const API_KEY = process.env.TANA_API_KEY
 
-function postItems(items) {
+function postNodes(nodes) {
   // Sending all given nodes at once as we think we won't have more than 100
   // nodes here
   // @see https://github.com/tanainc/tana-input-api-samples
   //
   // We're also adding the #inbox super tag on all node
-  const nodes = items.map(item => item.tanaNode)
-
   const payload = {
     targetNodeId: 'INBOX',
     nodes: nodes.map(node => ({
@@ -51,11 +49,11 @@ setInterval(
       Log.debug(`Posting ${Math.min(queue.length, BATCH_SIZE)} items to Tana`)
 
       // extracting items from the queue in batches
-      const items = queue.splice(0, BATCH_SIZE)
+      const nodes = queue.splice(0, BATCH_SIZE)
 
-      postItems(items)
-        .then(() => Log.info(`${items.length} items saved to Tana`))
-        .then(() => Store.saveItemsSaved(items.map(item => item.id)))
+      postNodes(nodes)
+        .then(() => Log.info(`${nodes.length} items saved to Tana`))
+        .then(() => Store.saveItemsSaved(nodes.map(item => item.id)))
         // in case of failure, we put back items at the beginning of the queue
         .catch(error => {
           Log.error('Error in saving items', error);
@@ -66,9 +64,9 @@ setInterval(
   20 * 1000
 )
 
-export function saveItems(items) {
-  if (items.length) {
-    queue.push(...items)
-    Log.info(`Added ${items.length} items to queue (${queue.length} items)`)
+export function saveNodes(nodes) {
+  if (nodes.length) {
+    queue.push(...nodes)
+    Log.info(`Added ${nodes.length} nodes to queue (${queue.length} nodes)`)
   }
 }

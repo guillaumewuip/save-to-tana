@@ -16,40 +16,40 @@ const rssFeeds = [
   {
     url: 'https://cmd.wuips.com/rss/feed.xml',
     cron: schedules.everyHour,
-    toTana: Tana.tana.music,
+    createNode: Tana.Node.createMusic,
   },
   {
     url: 'https://pitchfork.com/feed/reviews/best/albums/rss',
     cron: schedules.twiceAtNight,
-    toTana: Tana.tana.album,
+    createNode: Tana.Node.createAlbum,
   },
   {
     url: 'https://pitchfork.com/feed/reviews/best/reissues/rss',
     cron: schedules.twiceAtNight,
-    toTana: Tana.tana.album,
+    createNode: Tana.Node.createAlbum,
   },
   {
     url: 'https://stnt.org/rss.xml',
     cron: schedules.twiceAtNight,
-    toTana: Tana.tana.album,
+    createNode: Tana.Node.createAlbum,
   },
 
   // Tech
   {
     url: 'https://leaddev.com/content-piece-and-series/rss.xml',
     cron: schedules.twiceAtNight,
-    toTana: Tana.tana.website,
+    createNode: Tana.Node.createWebsite,
   },
   {
     // Thoughtworks Technology Podcast
     url: 'http://feeds.soundcloud.com/users/soundcloud:users:94605026/sounds.rss',
     cron: schedules.twiceAtNight,
-    toTana: Tana.tana.website,
+    createNode: Tana.Node.createWebsite,
   },
   {
     url: 'https://lethain.com/feeds.xml',
     cron: schedules.everyHour,
-    toTana: Tana.tana.website,
+    createNode: Tana.Node.createWebsite,
   },
 ];
 
@@ -68,7 +68,13 @@ async function extractItems(feed) {
   try {
     const items = await RSS.parse(feed.url);
 
-    return await Promise.all(items.map(rssItem => Tana.create(rssItem, feed)))
+    return await Promise.all(items.map(async rssItem => ({
+      id: rssItem.link,
+      title: rssItem.title,
+      publishedAt: rssItem.publishedAt,
+      node: await feed.createNode(feed.url, rssItem),
+      feed,
+    })))
   } catch (error) {
     Log.error(`Error extracting items`, feed.url, error);
 
@@ -119,7 +125,9 @@ async function parseFeed(feed) {
     const notAlreadySaved = await filterSavedItems(feed, notOldItems)
     Log.info(feed.url, `- ${notAlreadySaved.length} new items`)
 
-    Tana.saveItems(notAlreadySaved);
+    const nodes = notAlreadySaved.map(item => item.node)
+
+    Tana.saveNodes(nodes);
   } catch (error) {
     Log.error('Error in parsing feed', feed.url, error)
   }
