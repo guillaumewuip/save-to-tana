@@ -1,7 +1,7 @@
 import { fetchPageContent } from 'fetcher';
 import { summarizePageContent, summaryToNodes } from 'summarize-page';
 
-function source(url) {
+function createSource(url) {
   return {
     /* Source */
     type: "field",
@@ -14,7 +14,7 @@ function source(url) {
   }
 }
 
-function title(item) {
+function createTitle(item) {
   return {
     /* Title */
     type: 'field',
@@ -27,7 +27,7 @@ function title(item) {
   }
 }
 
-function url(item) {
+function createUrl(item) {
   return {
     /* URL */
     type: 'field',
@@ -51,9 +51,9 @@ export async function createAlbum(url, item) {
       },
     ],
     children: [
-      title(item),
-      url(item),
-      source(url)
+      createTitle(item),
+      createUrl(item),
+      createSource(url)
     ]
   }
 }
@@ -68,9 +68,9 @@ export async function createMusic(url, item) {
       },
     ],
     children: [
-      title(item),
-      url(item),
-      source(url)
+      createTitle(item),
+      createUrl(item),
+      createSource(url)
     ]
   }
 }
@@ -85,8 +85,8 @@ export async function createWebsite(url, item) {
       }
     ],
     children: [
-      url(item),
-      source(url),
+      createUrl(item),
+      createSource(url)
     ]
   }
 
