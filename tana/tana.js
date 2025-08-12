@@ -4,6 +4,26 @@ import * as Store from 'store';
 
 const API_KEY = process.env.TANA_API_KEY
 
+async function filterSavedNodes(nodes) {
+  const newNodes = []
+
+  try {
+    for (const node of nodes) {
+      const savedAlready = await Store.isSavedAlready(node.externalId)
+
+      if (!savedAlready) {
+        newNodes.push(node)
+      }
+    }
+  } catch (error) {
+    Log.error(`Error filtering items saved already`, feed.url, items, error);
+
+    return []
+  }
+
+  return newNodes
+}
+
 function postNodes(nodes) {
   // Sending all given nodes at once as we think we won't have more than 100
   // nodes here
@@ -51,7 +71,8 @@ setInterval(
       // extracting items from the queue in batches
       const nodes = queue.splice(0, BATCH_SIZE)
 
-      postNodes(nodes)
+      filterSavedNodes(nodes)
+        .then(postNodes)
         .then(() => Log.info(`${nodes.length} items saved to Tana`))
         .then(() => Store.saveItemsSaved(nodes.map(item => item.id)))
         // in case of failure, we put back items at the beginning of the queue

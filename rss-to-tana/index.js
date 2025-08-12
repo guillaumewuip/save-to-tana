@@ -65,16 +65,19 @@ function dateDiffInDays(a, b) {
 async function extractItems(feed) {
   Log.debug(feed.url, '- parsing')
 
+  const now = new Date()
+
   try {
     const items = await RSS.parse(feed.url);
 
-    return await Promise.all(items.map(async rssItem => ({
-      id: rssItem.link,
-      title: rssItem.title,
-      publishedAt: rssItem.publishedAt,
-      node: await feed.createNode(feed.url, rssItem),
-      feed,
-    })))
+    return await Promise.all(items
+        .filter(rssItem => dateDiffInDays(rssItem.publishedAt, now) < 3) // keep only recent items
+        .map(async rssItem => ({
+          id: rssItem.link,
+          title: rssItem.title,
+          node: await feed.createNode(feed.url, rssItem.link, rssItem),
+          feed,
+        })))
   } catch (error) {
     Log.error(`Error extracting items`, feed.url, error);
 
@@ -82,51 +85,13 @@ async function extractItems(feed) {
   }
 }
 
-// removes items older than 3 days
-async function filterOlderItems(feed, items) {
-  try {
-    const now = new Date()
-    return items.filter(item => dateDiffInDays(item.publishedAt, now) < 3)
-  } catch (error) {
-    Log.error(`Error filtering old items`, feed.url, error);
-
-    return []
-  }
-}
-
-async function filterSavedItems(feed, items) {
-  const newItems = []
-
-  try {
-    for (const item of items) {
-      const itemSavedAlready = await Store.isSavedAlready(item.id)
-
-      if (!itemSavedAlready) {
-        newItems.push(item)
-      }
-    }
-  } catch (error) {
-    Log.error(`Error filtering items saved already`, feed.url, items, error);
-
-    return []
-  }
-
-  return newItems
-}
 
 async function parseFeed(feed) {
   try {
     const items = await extractItems(feed)
-    Log.debug(feed.url, `- ${items.length} items in feed`)
+    Log.debug(feed.url, `- ${items.length} items extracted from feed`)
 
-    const notOldItems = await filterOlderItems(feed, items)
-    Log.debug(feed.url, `- ${notOldItems.length} items young enough`)
-
-    const notAlreadySaved = await filterSavedItems(feed, notOldItems)
-    Log.info(feed.url, `- ${notAlreadySaved.length} new items`)
-
-    const nodes = notAlreadySaved.map(item => item.node)
-
+    const nodes = items.map(item => item.node)
     Tana.saveNodes(nodes);
   } catch (error) {
     Log.error('Error in parsing feed', feed.url, error)

@@ -1,14 +1,14 @@
 import { fetchPageContent } from 'fetcher';
 import { summarizePageContent, summaryToNodes } from 'summarize-page';
 
-function createSource(url) {
+function createSource() {
   return {
     /* Source */
     type: "field",
     attributeId: "SalqarOgiv",
     children: [
       {
-        name: `RSS to Tana - ${url}`
+        name: `XXX to Tana`
       }
     ]
   }
@@ -27,7 +27,7 @@ function createTitle(item) {
   }
 }
 
-function createUrl(item) {
+function createUrl(url) {
   return {
     /* URL */
     type: 'field',
@@ -35,14 +35,15 @@ function createUrl(item) {
     children: [
       {
         dataType: 'url',
-        name: item.link
+        name: url
       }
     ]
   }
 }
 
-export async function createAlbum(url, item) {
+export async function createAlbum(url, externalId, item) {
   return {
+    externalId,
     name: item.title,
     supertags: [
       {
@@ -52,14 +53,15 @@ export async function createAlbum(url, item) {
     ],
     children: [
       createTitle(item),
-      createUrl(item),
-      createSource(url)
+      createUrl(item.url),
+      createSource()
     ]
   }
 }
 
-export async function createMusic(url, item) {
+export async function createMusic(url, externalId, item) {
   return {
+    externalId,
     name: item.title,
     supertags: [
       {
@@ -69,14 +71,15 @@ export async function createMusic(url, item) {
     ],
     children: [
       createTitle(item),
-      createUrl(item),
-      createSource(url)
+      createUrl(item.url),
+      createSource()
     ]
   }
 }
 
-export async function createWebsite(url, item) {
+export async function createWebsite(url, externalId, item) {
   const node = {
+    externalId,
     name: item.title,
     supertags: [
       {
@@ -85,8 +88,8 @@ export async function createWebsite(url, item) {
       }
     ],
     children: [
-      createUrl(item),
-      createSource(url)
+      createUrl(item.url),
+      createSource()
     ]
   }
 
@@ -110,5 +113,62 @@ export async function createWebsite(url, item) {
     });
 
     return node
+  }
+}
+
+export async function createActivity(url, externalId, activity) {
+  return {
+    externalId,
+    name: activity.name,
+    // supertags: [
+    //   {
+    //     /* Activity */
+    //     id: 'TODO'
+    //   },
+    // ],
+    // children: [
+    //    createUrl(item.url),
+    //    createSource(),
+    //   {
+    //     /* Name */
+    //     type: 'field',
+    //     attributeId: 'TODO',
+    //     children: [
+    //       {
+    //         name: activity.name,
+    //       }
+    //     ]
+    //   },
+    //   {
+    //     /* Distance */
+    //     type: 'field',
+    //     attributeId: 'TODO',
+    //     children: [
+    //       {
+    //         name: activity.distance,
+    //       }
+    //     ]
+    //   },
+    //   {
+    //     /* Moving Time */
+    //     type: 'field',
+    //     attributeId: 'TODO',
+    //     children: [
+    //       {
+    //         name: activity.moving_time,
+    //       }
+    //     ]
+    //   },
+    //   {
+    //     /* Start Date */
+    //     type: 'field',
+    //     attributeId: 'TODO',
+    //     children: [
+    //       {
+    //         name: activity.start_date,
+    //       }
+    //     ]
+    //   },
+    // ]
   }
 }
