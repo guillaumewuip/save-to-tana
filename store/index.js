@@ -33,7 +33,7 @@ export const initialize = async () => {
   await client.connect();
 }
 
-export const savedAlready = async (itemId) => {
+export const isSavedAlready = async (itemId) => {
   const nbKeysFound = await client.exists(storeId(itemId))
   return nbKeysFound === 1
 }

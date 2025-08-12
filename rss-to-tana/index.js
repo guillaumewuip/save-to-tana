@@ -99,7 +99,7 @@ async function filterSavedItems(feed, items) {
 
   try {
     for (const item of items) {
-      const itemSavedAlready = await Store.savedAlready(item.id)
+      const itemSavedAlready = await Store.isSavedAlready(item.id)
 
       if (!itemSavedAlready) {
         newItems.push(item)
