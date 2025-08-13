@@ -52,13 +52,13 @@ function postNodes(nodes) {
     },
     body: JSON.stringify(payload)
   })
-    .then(response => {
+    .then(async response => {
       if(response.ok) {
         Log.info(`${nodes.length} items saved to Tana`)
       }
 
       if (!response.ok || response.status !== 200) {
-        throw new Error(`Error saving nodes in Tana: ${response.status} ${response.statusText}`)
+        throw new Error(`Error saving nodes in Tana: ${response.status} ${response.statusText}. ${await response.text()}`)
       }
     })
 }
