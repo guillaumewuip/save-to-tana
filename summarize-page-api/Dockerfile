@@ -8,6 +8,4 @@ RUN npm ci --workspaces
 
 WORKDIR /app/summarize-page-api
 
-EXPOSE 3000
-
 CMD ["npm", "start"]
