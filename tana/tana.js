@@ -40,13 +40,15 @@ function postNodes(nodes) {
     )
   };
 
+  const body = JSON.stringify(payload)
+
   return fetch('https://europe-west1-tagr-prod.cloudfunctions.net/addToNodeV2', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${API_KEY}`
     },
-    body: JSON.stringify(payload)
+    body
   })
     .then(async response => {
       if(response.ok) {
@@ -54,7 +56,7 @@ function postNodes(nodes) {
       }
 
       if (!response.ok || response.status !== 200) {
-        throw new Error(`Error saving nodes in Tana: ${response.status} ${response.statusText}. ${await response.text()}`)
+        throw new Error(`Error saving nodes in Tana: ${response.status} ${response.statusText} (${await response.text()}) for ${body}`)
       }
     })
 }
