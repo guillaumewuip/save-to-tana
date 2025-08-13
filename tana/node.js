@@ -1,6 +1,18 @@
 import { fetchPageContent } from 'fetcher';
 import { summarizePageContent, summaryToNodes } from 'summarize-page';
 
+export function addSupertags(node, tags) {
+  return {
+    ...node,
+    supertags: [
+      ...node.supertags,
+      ...tags.map(tag => ({
+        id: tag
+      }))
+    ]
+  }
+}
+
 function createSource() {
   return {
     /* Source */
@@ -42,56 +54,44 @@ function createUrl(url) {
 }
 
 export async function createAlbum(externalId, item) {
-  return {
+  return addSupertags({
     externalId,
     name: item.title,
-    supertags: [
-      {
-        /* Album */
-        id: 'eWlghv3V42SH'
-      },
-    ],
     children: [
       createTitle(item),
       createUrl(item.url),
       createSource()
     ]
-  }
+  }, [
+    'eWlghv3V42SH', // Album
+  ])
 }
 
 export async function createMusic(externalId, item) {
-  return {
+  return addSupertags({
     externalId,
     name: item.title,
-    supertags: [
-      {
-        /* Music */
-        id: 'VI7FwJEpFAqY'
-      },
-    ],
     children: [
       createTitle(item),
       createUrl(item.url),
       createSource()
     ]
-  }
+  }, [
+    'VI7FwJEpFAqY' // Music
+  ])
 }
 
 export async function createWebsite(externalId, item) {
-  const node = {
+  const node = addSupertags({
     externalId,
     name: item.title,
-    supertags: [
-      {
-        /* Website */
-        id: 'G3E1S3l-dk0v'
-      }
-    ],
     children: [
       createUrl(item.url),
       createSource()
     ]
-  }
+  }, [
+    'G3E1S3l-dk0v' // Website
+  ])
 
   try {
     const page = await fetchPageContent(item.link);
@@ -101,7 +101,7 @@ export async function createWebsite(externalId, item) {
       /* Summary */
       type: 'field',
       attributeId: 'fvfamJjU6oY5', 
-       children: summaryToNodes(summary),
+      children: summaryToNodes(summary),
     })
 
     return node
@@ -171,4 +171,8 @@ export async function createActivity(externalId, activity) {
     //   },
     // ]
   }
+}
+
+export function encode({ externalId, ...node }) {
+  return node
 }

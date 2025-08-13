@@ -1,6 +1,7 @@
 import * as Log from 'log';
 
 import * as Store from 'store';
+import * as Node from './node'
 
 const API_KEY = process.env.TANA_API_KEY
 
@@ -32,16 +33,11 @@ function postNodes(nodes) {
   // We're also adding the #inbox super tag on all node
   const payload = {
     targetNodeId: 'INBOX',
-    nodes: nodes.map(node => ({
-      ...node,
-      supertags: [
-        ...node.supertags,
-        {
-          /* inbox */
-          id: 'hNwXd-0aYDVj'
-        }
-      ]
-    }))
+    nodes: nodes.map(node => 
+      Node.encode(Node.addSupertags(node, [
+        'hNwXd-0aYDVj' // Inbox
+      ]))
+    )
   };
 
   return fetch('https://europe-west1-tagr-prod.cloudfunctions.net/addToNodeV2', {
