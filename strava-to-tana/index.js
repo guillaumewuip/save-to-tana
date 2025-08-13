@@ -10,6 +10,10 @@ const fastify = Fastify({
   logger: true
 });
 
+fastify.get('/health', async (_, reply) => {
+  return reply.send({ status: 'ok' });
+});
+
 fastify.get('/oauth2-callback', async (request, reply) => {
   try {
     const { code } = request.query;
@@ -25,7 +29,7 @@ fastify.get('/oauth2-callback', async (request, reply) => {
     Log.info('OAuth2 flow completed successfully!');
 
     await processActivities()  // TODO remove
-    
+
     return reply.send({ 
       success: true, 
       message: 'OAuth2 authentication completed successfully! You can close this window.',
