@@ -26,14 +26,14 @@ function createSource() {
   }
 }
 
-function createTitle(item) {
+function createTitle(title) {
   return {
     /* Title */
     type: 'field',
     attributeId: 'ksBOEhsvfu',
     children: [
       {
-        name: item.title,
+        name: title,
       }
     ]
   }
@@ -53,13 +53,13 @@ function createUrl(url) {
   }
 }
 
-export async function createAlbum(externalId, item) {
+export async function createAlbum(externalId, { name, url }) {
   return addSupertags({
     externalId,
-    name: item.title,
+    name,
     children: [
-      createTitle(item),
-      createUrl(item.url),
+      createTitle(name),
+      createUrl(url),
       createSource()
     ]
   }, [
@@ -67,13 +67,13 @@ export async function createAlbum(externalId, item) {
   ])
 }
 
-export async function createMusic(externalId, item) {
+export async function createMusic(externalId, { name, url }) {
   return addSupertags({
     externalId,
-    name: item.title,
+    name,
     children: [
-      createTitle(item),
-      createUrl(item.url),
+      createTitle(name),
+      createUrl(url),
       createSource()
     ]
   }, [
@@ -81,12 +81,12 @@ export async function createMusic(externalId, item) {
   ])
 }
 
-export async function createWebsite(externalId, item) {
+export async function createWebsite(externalId, { name, url }) {
   const node = addSupertags({
     externalId,
-    name: item.title,
+    name,
     children: [
-      createUrl(item.url),
+      createUrl(url),
       createSource()
     ]
   }, [
@@ -94,7 +94,7 @@ export async function createWebsite(externalId, item) {
   ])
 
   try {
-    const page = await fetchPageContent(item.link);
+    const page = await fetchPageContent(url);
     const summary = await summarizePageContent(page, process.env.GEMINI_API_KEY);
 
     node.children.push({
@@ -116,10 +116,10 @@ export async function createWebsite(externalId, item) {
   }
 }
 
-export async function createActivity(externalId, activity) {
+export async function createActivity(externalId, { name, url }) {
   return {
     externalId,
-    name: activity.name,
+    name,
     // supertags: [
     //   {
     //     /* Activity */
