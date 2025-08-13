@@ -12,6 +12,10 @@ const RequestBodySchema = z.object({
   url: z.string().url('Must be a valid URL')
 });
 
+fastify.get('/health', async (_, reply) => {
+  return reply.send({ status: 'ok' });
+});
+
 fastify.post('/summarize-page-to-tana', async (request, reply) => {
   try {
     const validation = RequestBodySchema.safeParse(request.body);
