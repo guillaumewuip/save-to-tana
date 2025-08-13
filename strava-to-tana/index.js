@@ -1,14 +1,16 @@
 import cron from 'node-cron';
-import fastify from 'fastify';
+import Fastify from 'fastify';
 import * as Log from 'log';
 import * as Store from 'store';
 import * as Tana from 'tana';
 import { fetchRecentActivities, exchangeCodeForToken, getOAuthUrl, hasTokens } from './strava.js';
 import { StravaActivitySchema } from './zod-schemas.js';
 
-const app = fastify({ logger: true });
+const fastify = Fastify({
+  logger: true
+});
 
-app.get('/oauth2-callback', async (request, reply) => {
+fastify.get('/oauth2-callback', async (request, reply) => {
   try {
     const { code } = request.query;
     
