@@ -64,7 +64,7 @@ async function start() {
   await Store.initialize();
 
   try {
-    await fastify.listen({ port: 3000, host: '0.0.0.0' });
+    await fastify.listen({ port: 5000, host: '0.0.0.0' });
     
     const oauthUrl = getOAuthUrl();
     console.log('\n' + '='.repeat(80));
