@@ -5,7 +5,7 @@ export function addSupertags(node, tags) {
   return {
     ...node,
     supertags: [
-      ...node.supertags,
+      ...(node.supertags ?? []),
       ...tags.map(tag => ({
         id: tag
       }))

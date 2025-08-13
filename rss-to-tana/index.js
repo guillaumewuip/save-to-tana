@@ -82,7 +82,6 @@ async function extractItems(feed) {
   }
 }
 
-
 async function parseFeed(feed) {
   try {
     const items = await extractItems(feed)
