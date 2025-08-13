@@ -62,16 +62,16 @@ function postNodes(nodes) {
 }
 
 const BATCH_SIZE = 100;
-const queue = []
+const inboxQueue = []
 
 // every 20s, we post the queue
 setInterval(
   () => {
-    if (queue.length) {
-      Log.debug(`Posting ${Math.min(queue.length, BATCH_SIZE)} items to Tana`)
+    if (inboxQueue.length) {
+      Log.debug(`Posting ${Math.min(inboxQueue.length, BATCH_SIZE)} items to Tana`)
 
       // extracting items from the queue in batches
-      const nodes = queue.splice(0, BATCH_SIZE)
+      const nodes = inboxQueue.splice(0, BATCH_SIZE)
 
       filterSavedNodes(nodes)
         .then(postNodes)
@@ -79,16 +79,16 @@ setInterval(
         // in case of failure, we put back items at the beginning of the queue
         .catch(error => {
           Log.error('Error in saving items', error);
-          queue.unshift(...nodes)
+          inboxQueue.unshift(...nodes)
         });
     }
   },
   20 * 1000
 )
 
-export function saveNodes(nodes) {
+export function saveNodesToInbox(nodes) {
   if (nodes.length) {
-    queue.push(...nodes)
-    Log.info(`Added ${nodes.length} nodes to queue (${queue.length} nodes)`)
+    inboxQueue.push(...nodes)
+    Log.info(`Added ${nodes.length} nodes to queue (${inboxQueue.length} nodes)`)
   }
 }

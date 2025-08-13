@@ -91,7 +91,7 @@ async function parseFeed(feed) {
     Log.debug(feed.url, `- ${items.length} items extracted from feed`)
 
     const nodes = items.map(item => item.node)
-    Tana.saveNodes(nodes);
+    Tana.saveNodesToInbox(nodes);
   } catch (error) {
     Log.error('Error in parsing feed', feed.url, error)
   }
