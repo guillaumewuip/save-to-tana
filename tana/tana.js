@@ -25,19 +25,10 @@ async function filterSavedNodes(nodes) {
   return newNodes
 }
 
-function postNodesToInbox(nodes) {
-  // Sending all given nodes at once as we think we won't have more than 100
-  // nodes here
-  // @see https://github.com/tanainc/tana-input-api-samples
-  //
-  // We're also adding the #inbox super tag on all node
+function postNodes(targetNodeId, nodes) {
   const payload = {
-    targetNodeId: 'INBOX',
-    nodes: nodes.map(node => 
-      Node.encode(Node.addSupertags(node, [
-        'hNwXd-0aYDVj' // Inbox
-      ]))
-    )
+    targetNodeId,
+    nodes,
   };
 
   const body = JSON.stringify(payload)
@@ -61,34 +52,60 @@ function postNodesToInbox(nodes) {
     })
 }
 
+function postNodesToInbox(nodes) {
+  return postNodes('INBOX', nodes.map(node => 
+    Node.encode(Node.addSupertags(node, [
+      'hNwXd-0aYDVj' // Inbox
+    ]))
+  ))
+}
+
+function postNodesToActivity(nodes) {
+ return postNodes('TODO', nodes.map(node => 
+    Node.encode(node)
+  ))
+}
+
 const BATCH_SIZE = 100;
 const inboxQueue = []
+const activityQueue = []
 
-// every 20s, we post the queue
+function enqueue(queue, post) {
+  if (queue.length) {
+    Log.debug(`Posting ${Math.min(queue.length, BATCH_SIZE)} items to Tana with ${post.name}`);
+
+    const nodes = queue.splice(0, BATCH_SIZE);
+
+    filterSavedNodes(nodes)
+      .then(post)
+      .then(() => Store.saveItemsSaved(nodes.map(node => node.externalId)))
+      // in case of failure, we put back items at the beginning of the queue
+      .catch(error => {
+        Log.error('Error in saving items', error);
+        queue.unshift(...nodes);
+      });
+  }
+}
+
+// every 20s, we post the queues
 setInterval(
   () => {
-    if (inboxQueue.length) {
-      Log.debug(`Posting ${Math.min(inboxQueue.length, BATCH_SIZE)} items to Tana`)
-
-      // extracting items from the queue in batches
-      const nodes = inboxQueue.splice(0, BATCH_SIZE)
-
-      filterSavedNodes(nodes)
-        .then(postNodesToInbox)
-        .then(() => Store.saveItemsSaved(nodes.map(node => node.externalId)))
-        // in case of failure, we put back items at the beginning of the queue
-        .catch(error => {
-          Log.error('Error in saving items', error);
-          inboxQueue.unshift(...nodes)
-        });
-    }
+    enqueue(inboxQueue, postNodesToInbox);
+    enqueue(activityQueue, postNodesToActivity);
   },
   20 * 1000
-)
+);
 
 export function saveNodesToInbox(nodes) {
   if (nodes.length) {
     inboxQueue.push(...nodes)
-    Log.info(`Added ${nodes.length} nodes to queue (${inboxQueue.length} nodes)`)
+    Log.info(`Added ${nodes.length} nodes to inbox queue (${inboxQueue.length} nodes)`)
+  }
+}
+
+export function saveNodesToActivity(nodes) {
+  if (nodes.length) {
+    activityQueue.push(...nodes)
+    Log.info(`Added ${nodes.length} nodes to activity queue (${activityQueue.length} nodes)`)
   }
 }
