@@ -1,5 +1,5 @@
 {
   "name": "save-to-tana",
-  "workspaces": ["fetcher", "summarize-page", "rss-to-tana", "summarize-page-api", "save-page-to-tana", "store", "tana", "log"],
+  "workspaces": ["fetcher", "summarize-page", "rss-to-tana", "summarize-page-api", "save-page-to-tana", "store", "tana", "log", "strava-to-tana"],
   "private": true
 }

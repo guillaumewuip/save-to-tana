@@ -1,0 +1,22 @@
+name: Deploy strava-to-tana
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Cloning repo
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Push to dokku
+        uses: dokku/github-action@master
+        with:
+          branch: "main"
+          git_remote_url: "ssh://dokku@${{ secrets.DOKKU_SERVER_IP }}:22/strava-to-tana"
+          ssh_private_key: ${{ secrets.DOKKU_DEPLOY_SSH_PRIVATE_KEY }}

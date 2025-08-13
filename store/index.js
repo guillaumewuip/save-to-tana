@@ -49,3 +49,12 @@ const saveItemSaved = async (itemId) => {
 export const saveItemsSaved = async (itemIds) => {
   return Promise.all(itemIds.map(saveItemSaved))
 }
+
+export const save = async (key, value) => {
+  await client.set(key, value);
+}
+
+export const read = async (key) => {
+  const value = await client.get(key);
+  return value;
+}
