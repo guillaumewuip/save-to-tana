@@ -25,7 +25,7 @@ async function filterSavedNodes(nodes) {
   return newNodes
 }
 
-function postNodes(nodes) {
+function postNodesToInbox(nodes) {
   // Sending all given nodes at once as we think we won't have more than 100
   // nodes here
   // @see https://github.com/tanainc/tana-input-api-samples
@@ -74,7 +74,7 @@ setInterval(
       const nodes = inboxQueue.splice(0, BATCH_SIZE)
 
       filterSavedNodes(nodes)
-        .then(postNodes)
+        .then(postNodesToInbox)
         .then(() => Store.saveItemsSaved(nodes.map(node => node.externalId)))
         // in case of failure, we put back items at the beginning of the queue
         .catch(error => {
