@@ -24,7 +24,7 @@ async function start() {
   await Store.initialize();
 
   if (!(await hasTokens())) {
-    Log.warn('No tokens available. Trying to use provided code');
+    Log.info('No tokens available. Trying to use provided code');
 
     const STRAVA_OAUTH2_CODE = process.env.STRAVA_OAUTH2_CODE;
 
