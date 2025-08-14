@@ -117,7 +117,7 @@ export async function createWebsite(externalId, { name, url }) {
 }
 
 export function createActivity(externalId, { name, distance, date, url, elevation, moving_time, watts, heart_rate, cadence }) {
-  return {
+  const node = {
     externalId,
     name,
     supertags: [
@@ -170,34 +170,45 @@ export function createActivity(externalId, { name, distance, date, url, elevatio
           }
         ]
       },
-      {
-        /* Cadence (min/km) */
-        type: 'field',
-        attributeId: 'L9W5kZLNPs2a',
-        children: [
-          {
-            name: cadence,
-          }
-        ],
-      },
-      {
-        /* Watts */
-        type: 'field',
-        attributeId: 'ssiKiq1m_VVk', 
-        children: [{
-          name: watts,
-        }]
-      },
-      {
-        /* Heart rate (bpm) */
-        type: 'field',
-        attributeId: 'qDBhxqnV9Nea',
-        children: [{
-          name: heart_rate,
-        }]
-      },
     ]
   }
+
+  if (cadence) { 
+    node.children.push({
+      /* Cadence (min/km) */
+      type: 'field',
+      attributeId: 'L9W5kZLNPs2a',
+      children: [
+        {
+          name: cadence,
+        }
+      ],
+    });
+  }
+
+  if (watts) {
+    node.children.push({
+      /* Watts */
+      type: 'field',
+      attributeId: 'ssiKiq1m_VVk',
+      children: [{
+        name: watts,
+      }]
+    });
+  }
+
+  if (heart_rate) {
+    node.children.push({
+      /* Heart rate (bpm) */
+      type: 'field',
+      attributeId: 'qDBhxqnV9Nea',
+      children: [{
+        name: heart_rate,
+      }]
+    });
+  }
+
+  return node
 }
 
 export function encode({ externalId, ...node }) {

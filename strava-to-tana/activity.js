@@ -26,7 +26,9 @@ export const parseActivities = (data) => {
   return result.data;
 };
 
-export const toTanaNode = (activity) =>  Tana.Node.createActivity(
+export const toTanaNode = (activity) => {
+  
+  const node = Tana.Node.createActivity(
   `strava-${activity.id}`, 
     {
     name: activity.name,
@@ -40,3 +42,7 @@ export const toTanaNode = (activity) =>  Tana.Node.createActivity(
     cadence: activity.average_cadence,
   }
 )
+console.log({ activity, node })
+
+return node
+}
