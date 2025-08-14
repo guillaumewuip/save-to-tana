@@ -148,6 +148,7 @@ export function createActivity(externalId, { name, type, distance, date, url, el
               name: type,
             }
           ]
+        }
       // {
       //   /* When */
       //   type: 'field',
