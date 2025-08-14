@@ -26,14 +26,17 @@ export const parseActivities = (data) => {
   return result.data;
 };
 
-export const toTanaNode = (activity) =>  Tana.Node.createActivity(activity.id, {
-  name: activity.name,
-  distance: activity.distance,
-  date: activity.start_date, 
-  url: `https://www.strava.com/activities/${activity.id}`,
-  elevation: activity.total_elevation_gain,
-  moving_time: activity.moving_time,
-  watts: activity.average_watts,
-  heart_rate: activity.average_heartrate,
-  cadence: activity.average_cadence,
-})
+export const toTanaNode = (activity) =>  Tana.Node.createActivity(
+  `strava-${activity.id}`, 
+    {
+    name: activity.name,
+    distance: activity.distance,
+    date: activity.start_date, 
+    url: `https://www.strava.com/activities/${activity.id}`,
+    elevation: activity.total_elevation_gain,
+    moving_time: activity.moving_time,
+    watts: activity.average_watts,
+    heart_rate: activity.average_heartrate,
+    cadence: activity.average_cadence,
+  }
+)
