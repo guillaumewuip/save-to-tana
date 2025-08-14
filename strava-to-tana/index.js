@@ -1,14 +1,54 @@
 import cron from 'node-cron';
+import Fastify from 'fastify';
 import * as Log from 'log';
 import * as Store from 'store';
 import * as Tana from 'tana';
-import { fetchRecentActivities, exchangeCodeForToken, hasTokens } from './strava.js';
+import { fetchRecentActivities, exchangeCodeForToken, getOAuthUrl, hasTokens } from './strava.js';
 import { StravaActivitySchema } from './zod-schemas.js';
+
+const fastify = Fastify({
+  logger: true
+});
+
+fastify.get('/health', async (_, reply) => {
+  return reply.send({ status: 'ok' });
+});
+
+fastify.get('/oauth2-callback', async (request, reply) => {
+  try {
+    const { code } = request.query;
+    
+    if (!code) {
+      return reply.status(400).send({ error: 'Missing code parameter' });
+    }
+
+    Log.info('Received OAuth2 callback with code, exchanging for tokens...');
+    
+    await exchangeCodeForToken(code);
+    
+    Log.info('OAuth2 flow completed successfully!');
+
+    await processActivities()  // TODO remove
+
+    return reply.send({ 
+      success: true, 
+      message: 'OAuth2 authentication completed successfully! You can close this window.',
+    });
+  } catch (error) {
+    Log.error('Error in OAuth2 callback:', error.message);
+    return reply.status(500).send({ error: 'Failed to exchange code for tokens' });
+  }
+});
 
 async function processActivities() {
   Log.info('Fetch strava activities...');
 
-  const activities = await fetchRecentActivities();
+  if (!hasTokens()) {
+    Log.warn('No tokens available. Please complete OAuth2 authentication first.');
+    return;
+  }
+
+  const activities = await fetchRecentActivities(); 
 
   console.log(activities);
 
@@ -23,32 +63,26 @@ async function start() {
 
   await Store.initialize();
 
-  if (!(await hasTokens())) {
-    Log.info('No tokens available. Trying to use provided code');
-
-    const STRAVA_OAUTH2_CODE = process.env.STRAVA_OAUTH2_CODE;
-
-    if (!STRAVA_OAUTH2_CODE) {
-      Log.error('No authorization code provided.');
-      process.exit(1);
-    }
-
-    try {
-      await exchangeCodeForToken(STRAVA_OAUTH2_CODE);
-    } catch (error) {
-      Log.error('Error exchanging code for tokens:', error);
-      process.exit(1);
-    }
+  try {
+    await fastify.listen({ port: 5000, host: '0.0.0.0' });
+    
+    const oauthUrl = getOAuthUrl();
+    console.log('\n' + '='.repeat(80));
+    console.log('🔐 STRAVA AUTHENTICATION REQUIRED');
+    console.log('='.repeat(80));
+    console.log('Please open the following URL in your browser to authenticate with Strava:');
+    console.log('\n' + oauthUrl + '\n');
+    console.log('After authentication, you will be redirected back to this application.');
+    console.log('='.repeat(80) + '\n');
+  
+    cron.schedule('0 * * * *', () => {
+      console.log('Running scheduled task...');
+      //processActivities();  
+    });
+  } catch (error) {
+    Log.error('Failed to start server:', error.message);
+    process.exit(1);
   }
-
-  Log.info('Strava to Tana service started successfully!');
-  
-  await processActivities();
-  
-  cron.schedule('0 * * * *', () => { // TODO update
-    Log.info('Running scheduled task...');
-    processActivities();  
-  });
 }
 
 start();
