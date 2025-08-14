@@ -132,7 +132,7 @@ export function createActivity(externalId, { name, distance, date, url, elevatio
        {
           /* Name */
           type: 'field',
-          attributeId: 'l4_Tr_0fV7rQ',
+          attributeId: '_pT90vnYbeYl',
           children: [
             {
               name,
