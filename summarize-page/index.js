@@ -11,35 +11,37 @@ export async function summarizePageContent(pageContent, apiKey) {
   const SummarySchema = z.object({
     summary: z.object({
       oneLine: z.string().describe('One line summary of what the page is about'),
-      details: z.array(z.string()).describe('List of key details about the page content')
+      details: z.array(z.string()).describe('List of key details about the page content ')
     }),
-    ratings: z.string().describe('Overall rating of the page content'),
+    ratings: z.enum(['Excellent', 'Good', 'Average', 'Poor']).describe('Overall rating of the page content'),
     peopleMentioned: z.array(z.string()).optional().describe('List of people mentioned in the content, if any')
   });
 
   const { object: summaryResult } = await generateObject({
       model,
       schema: SummarySchema,
-      prompt: `
-  You are a webpage summarization API. Your response will be parsed programmatically.
+      prompt: `# Persona
+You are a highly efficient webpage summarization API. Your sole purpose is to process raw webpage content. You are meticulous about following the specified output format and adhering to all guidelines.
 
-  Guidelines for summarization:
-  - Filter out irrelevant details, focus on main content
-  - Extract key points and make them action-oriented when relevant
-  - Write in the same language as the webpage
-  - No subheadings, HTML tags, or markdown formatting
-  - No double spaces or excessive indentation
-  - Keep "oneLine" and "details" values as single lines without line breaks
+# Task
+Analyze the provided webpage content and generate a concise, structured summary. The summary must capture the key information, main ideas, and any actionable items, while filtering out irrelevant details like advertisements, navigation links, and boilerplate text.
 
-  IMPORTANT RULES:
-  1. ONLY include the "peopleMentioned" property if relevant people are actually mentioned in the content
-  2. Your entire response must be valid JSON object that can be parsed by JSON.parse()
-  3. Do not wrap the JSON in code blocks or add any explanatory text
-  4. Ensure all quotes are properly escaped
-  5. Do not include comments in the JSON
+# Instructions
+1.  **Analyze Content:** Read the entire content to understand its primary topic and purpose.
+2.  **Filter Noise:** Ignore any content that is not part of the main article or body, such as headers, footers, ads, and sidebars.
+3.  **Summarize:** Create a one-line summary (`oneLine`) and a more detailed summary (`details`).
+4.  **Extract Key Information:**
+    * Identify and list key takeaways in the `actionItems` array.
+    * If specific individuals are named and are relevant to the content, list their names in the `peopleMentioned` array. If no one is mentioned, **DO NOT** include the `peopleMentioned` property in the output.
+5.  **Rate the Content:** Provide an overall `rating` for the content's quality (Excellent, Good, Average, Poor) by comparing it to other pages on similar topics.
+6.  **Language Consistency:** The entire JSON output, including all string values, must be in the same language as the original `WEBPAGE_CONTENT`.
+7.  **Formatting Rules:**
+    * Ensure all string values in the JSON are properly escaped.
+    * The `oneLine` and `details` values must be single-line strings without any `\n` newline characters.
+    * The final output must be a single, valid JSON object and nothing else. Do not include any explanatory text before or after the JSON.
 
-  Webpage content to summarize:
-  ${pageContent.slice(0, 10000)}` // Limit content to avoid token limits
+Webpage content to summarize:
+${pageContent.slice(0, 10000)}` // Limit content to avoid token limits
     });
 
   return summaryResult
