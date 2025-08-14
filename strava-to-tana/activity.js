@@ -32,6 +32,7 @@ export const toTanaNode = (activity) => {
   `strava-${activity.id}`, 
     {
     name: activity.name,
+    type: activity.sport_type,
     distance: activity.distance,
     date: activity.start_date, 
     url: `https://www.strava.com/activities/${activity.id}`,
