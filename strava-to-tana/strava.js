@@ -1,11 +1,14 @@
 import * as Log from 'log';
 import * as Store from 'store';
+import { Mutex } from 'async-mutex';
 
 const STRAVA_CLIENT_ID = process.env.STRAVA_CLIENT_ID;
 const STRAVA_CLIENT_SECRET = process.env.STRAVA_CLIENT_SECRET;
 const BASE_URL = process.env.BASE_URL || 'http://localhost:3000';
 
-export function getOAuthUrl() {
+const oauthMutex = new Mutex(); 
+
+function getOAuthUrl() {
   if (!STRAVA_CLIENT_ID) {
     throw new Error('STRAVA_CLIENT_ID environment variable is not set.');
   }
@@ -19,6 +22,20 @@ export function getOAuthUrl() {
   url.searchParams.append('scope', 'activity:read_all');
   
   return url.toString();
+}
+
+export async function askOauth2() {
+  await oauthMutex.acquire();
+
+  const oauthUrl = getOAuthUrl();
+
+  console.log('\n' + '='.repeat(80));
+  console.log('🔐 STRAVA AUTHENTICATION REQUIRED');
+  console.log('='.repeat(80));
+  console.log('Please open the following URL in your browser to authenticate with Strava:');
+  console.log('\n' + oauthUrl + '\n');
+  console.log('After authentication, you will be redirected back to this application.');
+  console.log('='.repeat(80) + '\n');
 }
 
 export async function exchangeCodeForToken(code) {
@@ -47,11 +64,19 @@ export async function exchangeCodeForToken(code) {
 
   const data = await response.json();
 
-  Log.info('Successfully exchanged code for tokens');
-
   await Store.save('strava_refresh_token', data.refresh_token);
 
+  await oauthMutex.release();
+
   return data;
+}
+
+export async function waitForOauth2() {
+  await oauthMutex.waitForUnlock();
+
+  if (!hasTokens()) {
+    throw new Error('No Strava tokens found. Please complete OAuth2 authentication first.');
+  }
 }
 
 async function refreshTokens() {

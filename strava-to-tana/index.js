@@ -3,7 +3,7 @@ import Fastify from 'fastify';
 import * as Log from 'log';
 import * as Store from 'store';
 import * as Tana from 'tana';
-import { fetchRecentActivities, exchangeCodeForToken, getOAuthUrl, hasTokens } from './strava.js';
+import { fetchRecentActivities, exchangeCodeForToken, hasTokens,askOauth2, waitForOauth2} from './strava.js';
 import { StravaActivitySchema } from './zod-schemas.js';
 
 const fastify = Fastify({
@@ -27,8 +27,6 @@ fastify.get('/oauth2-callback', async (request, reply) => {
     await exchangeCodeForToken(code);
     
     Log.info('OAuth2 flow completed successfully!');
-
-    await processActivities()  // TODO remove
 
     return reply.send({ 
       success: true, 
@@ -65,16 +63,17 @@ async function start() {
 
   try {
     await fastify.listen({ port: 5000, host: '0.0.0.0' });
-    
-    const oauthUrl = getOAuthUrl();
-    console.log('\n' + '='.repeat(80));
-    console.log('🔐 STRAVA AUTHENTICATION REQUIRED');
-    console.log('='.repeat(80));
-    console.log('Please open the following URL in your browser to authenticate with Strava:');
-    console.log('\n' + oauthUrl + '\n');
-    console.log('After authentication, you will be redirected back to this application.');
-    console.log('='.repeat(80) + '\n');
-  
+
+    if (!(await hasTokens())) {
+      Log.debug('No tokens found. Redirecting to OAuth2 flow...');
+
+      await askOauth2()
+    }
+
+    await waitForOauth2();
+
+    await processActivities();
+
     cron.schedule('0 * * * *', () => {
       console.log('Running scheduled task...');
       //processActivities();  
