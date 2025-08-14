@@ -13,6 +13,7 @@ export async function summarizePageContent(pageContent, apiKey) {
       oneLine: z.string().describe('One line summary of what the page is about'),
       details: z.array(z.string()).describe('List of key details about the page content')
     }),
+    ratings: z.string().describe('Overall rating of the page content'),
     peopleMentioned: z.array(z.string()).optional().describe('List of people mentioned in the content, if any')
   });
 
@@ -20,7 +21,7 @@ export async function summarizePageContent(pageContent, apiKey) {
       model,
       schema: SummarySchema,
       prompt: `
-  You are a webpage summarization API Your response will be parsed programmatically.
+  You are a webpage summarization API. Your response will be parsed programmatically.
 
   Guidelines for summarization:
   - Filter out irrelevant details, focus on main content

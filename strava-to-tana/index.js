@@ -43,7 +43,7 @@ async function processActivities() {
 
   try {
     const activities = await fetchRecentActivities(); 
-    const activitiesNodes = Activity.parseActivities(activities).map(Activity.toTanaNode);
+    const activitiesNodes = Activity.parseActivities(activities).map(activity => Activity.toTanaNode(activity));
 
     Tana.saveNodesToActivity(activitiesNodes);
   } catch (error) {

@@ -116,7 +116,7 @@ export async function createWebsite(externalId, { name, url }) {
   }
 }
 
-export async function createActivity(externalId, { name, distance, date, url, elevation, moving_time, watts, heart_rate, cadence }) {
+export function createActivity(externalId, { name, distance, date, url, elevation, moving_time, watts, heart_rate, cadence }) {
   return {
     externalId,
     name,
