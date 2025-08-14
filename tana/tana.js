@@ -74,8 +74,9 @@ async function enqueue(queue, post, saveNode = true) {
   if (queue.length) {
     Log.debug(`Posting ${Math.min(queue.length, BATCH_SIZE)} items to Tana with ${post.name}`);
     
+    const nodes = queue.splice(0, BATCH_SIZE);
+
     try {
-      const nodes = queue.splice(0, BATCH_SIZE);
       const nonSavedNodes = await filterSavedNodes(nodes)
       
       Log.debug(`${nonSavedNodes.length} not already saved. Posting...`);
