@@ -36,5 +36,6 @@ export const toTanaNode = (activity) => {
     moving_time: activity.moving_time,
     watts: activity.average_watts,
     heart_rate: activity.average_heartrate,
+    cadence: activity.average_cadence,
   })
 }
