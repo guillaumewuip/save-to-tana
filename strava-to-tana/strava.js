@@ -117,10 +117,10 @@ export async function isAuthenticated() {
 export async function fetchRecentActivities() {
   const { access_token } = await refreshTokens();
 
-  const tenDaysAgoTimestamp = Math.floor(Date.now() / 1000) - 86400 * 10;
+  const fifteenDaysAgoTimestamp = Math.floor(Date.now() / 1000) - 86400 * 15;
 
   const url = new URL('https://www.strava.com/api/v3/athlete/activities');
-  url.searchParams.append('after', tenDaysAgoTimestamp);
+  url.searchParams.append('after', fifteenDaysAgoTimestamp);
   url.searchParams.append('per_page', 100);
 
   const response = await fetch(url.toString(), {

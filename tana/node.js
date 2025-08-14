@@ -116,7 +116,7 @@ export async function createWebsite(externalId, { name, url }) {
   }
 }
 
-export function createActivity(externalId, { name, distance, date, url, elevation, moving_time, watts, heart_rate, cadence }) {
+export function createActivity(externalId, { name, type, distance, date, url, elevation, moving_time, watts, heart_rate, cadence }) {
   const node = {
     externalId,
     name: "",
@@ -139,6 +139,15 @@ export function createActivity(externalId, { name, distance, date, url, elevatio
             }
           ]
        },
+       {
+          /* Type */
+          type: 'field',
+          attributeId: '8K01kQpk99Un',
+          children: [
+            {
+              name: type,
+            }
+          ]
       // {
       //   /* When */
       //   type: 'field',
@@ -150,38 +159,46 @@ export function createActivity(externalId, { name, distance, date, url, elevatio
       //     }
       //   ]
       // },
-      // {
-      //   /* Distance */
-      //   type: 'field',
-      //   attributeId: 'HLjYjL1bLZTG',
-      //   children: [
-      //     {
-      //       name: distance,
-      //     }
-      //   ]
-      // },
-    
-      // {
-      //   /* Elevation */
-      //   type: 'field',
-      //   attributeId: 'j7foFAsn-bMh', 
-      //   children: [
-      //     {
-      //       name: elevation,
-      //     }
-      //   ]
-      // },
-      // {
-      // /* Moving time */
-      //   type: 'field',
-      //   attributeId: 'nhpKOKoGwkqz',
-      //   children: [
-      //     {
-      //       name: moving_time,
-      //     }
-      //   ]
-      // },
     ]
+  }
+
+  if (distance) {
+    node.children.push({
+      /* Distance */
+      type: 'field',
+      attributeId: 'HLjYjL1bLZTG',
+      children: [
+        {
+          name: distance,
+        }
+      ]
+    });
+  }
+
+  if (elevation) {
+    node.children.push({
+      /* Elevation */
+      type: 'field',
+      attributeId: 'j7foFAsn-bMh',
+      children: [
+        {
+          name: elevation,
+        }
+      ]
+    });
+  }
+
+  if (moving_time) {
+    node.children.push({
+      /* Moving time */
+      type: 'field',
+      attributeId: 'nhpKOKoGwkqz',
+      children: [
+        {
+          name: moving_time,
+        }
+      ]
+    });
   }
 
   // if (cadence) { 
