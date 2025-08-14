@@ -4,7 +4,7 @@ import * as Log from 'log';
 import * as Store from 'store';
 import * as Tana from 'tana';
 import { fetchRecentActivities, exchangeCodeForToken, hasTokens,askOauth2, waitForOauth2} from './strava.js';
-import { StravaActivitySchema } from './zod-schemas.js';
+import * as Activity from './activity.js';
 
 const fastify = Fastify({
   logger: true
@@ -41,18 +41,13 @@ fastify.get('/oauth2-callback', async (request, reply) => {
 async function processActivities() {
   Log.info('Fetch strava activities...');
 
-  if (!hasTokens()) {
-    Log.warn('No tokens available. Please complete OAuth2 authentication first.');
-    return;
-  }
+  try {
+    const activities = await fetchRecentActivities(); 
+    const parsedActivities = Activity.parseActivities(activities);
 
-  const activities = await fetchRecentActivities(); 
-
-  console.log(activities);
-
-  if (!activities || activities.length === 0) {
-    Log.info('No new Strava activities found.');
-    return;
+    console.log(parsedActivities);
+  } catch (error) {
+    Log.error('Error fetching Strava activities:', error.message);
   }
 }
 
