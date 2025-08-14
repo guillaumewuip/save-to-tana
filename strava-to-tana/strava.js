@@ -111,7 +111,7 @@ async function refreshTokens() {
 }
 
 export async function hasTokens() {
-  return await Store.read('strava_access_token') && await Store.read('strava_refresh_token');
+  return await Store.read('strava_refresh_token');
 }
 
 export async function fetchRecentActivities() {
