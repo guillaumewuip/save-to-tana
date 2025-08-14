@@ -8,6 +8,4 @@ RUN npm ci --workspaces
 
 WORKDIR /app/rss-to-tana
 
-EXPOSE 8080
-
 CMD ["npm", "start"]
