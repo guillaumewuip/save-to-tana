@@ -3,7 +3,7 @@ import Fastify from 'fastify';
 import * as Log from 'log';
 import * as Store from 'store';
 import * as Tana from 'tana';
-import { fetchRecentActivities, exchangeCodeForToken, hasTokens,askOauth2, waitForOauth2} from './strava.js';
+import { fetchRecentActivities, exchangeCodeForToken, isAuthenticated,askOauth2, waitForOauth2} from './strava.js';
 import * as Activity from './activity.js';
 
 const fastify = Fastify({
@@ -59,7 +59,7 @@ async function start() {
   try {
     await fastify.listen({ port: 5000, host: '0.0.0.0' });
 
-    if (!(await hasTokens())) {
+    if (!(await isAuthenticated())) {
       Log.debug('No tokens found. Redirecting to OAuth2 flow...');
 
       await askOauth2()

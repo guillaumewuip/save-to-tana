@@ -74,7 +74,7 @@ export async function exchangeCodeForToken(code) {
 export async function waitForOauth2() {
   await oauthMutex.waitForUnlock();
 
-  if (!hasTokens()) {
+  if (!isAuthenticated()) {
     throw new Error('No Strava tokens found. Please complete OAuth2 authentication first.');
   }
 }
@@ -110,7 +110,7 @@ async function refreshTokens() {
   return { access_token: data.access_token };
 }
 
-export async function hasTokens() {
+export async function isAuthenticated() {
   return await Store.read('strava_refresh_token');
 }
 
