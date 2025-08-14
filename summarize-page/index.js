@@ -13,7 +13,10 @@ export async function summarizePageContent(pageContent, apiKey) {
       oneLine: z.string().describe('One line summary of what the page is about'),
       details: z.array(z.string()).describe('List of key details about the page content ')
     }),
-    ratings: z.enum(['Excellent', 'Good', 'Average', 'Poor']).describe('Overall rating of the page content'),
+    rating: z.object({
+      value: z.enum(['Excellent', 'Good', 'Average', 'Poor']).describe('Overall rating of the page content'),
+      reason: z.string().describe('Reason for the rating')
+    }),
     peopleMentioned: z.array(z.string()).optional().describe('List of people mentioned in the content, if any')
   });
 
@@ -33,7 +36,7 @@ Analyze the provided webpage content and generate a concise, structured summary.
 4.  **Extract Key Information:**
     * Identify and list key takeaways in the actionItems array.
     * If specific individuals are named and are relevant to the content, list their names in the peopleMentioned array. If no one is mentioned, **DO NOT** include the peopleMentioned property in the output.
-5.  **Rate the Content:** Provide an overall rating for the content's quality (Excellent, Good, Average, Poor) by comparing it to other pages on similar topics.
+5.  **Rate the Content:** Provide an overall rating for the content's quality (Excellent, Good, Average, Poor) by comparing it to other pages on similar topics. Explain the rating given.
 6.  **Language Consistency:** The entire JSON output, including all string values, must be in the same language as the original content.
 7.  **Formatting Rules:**
     * Ensure all string values in the JSON are properly escaped.
@@ -49,6 +52,9 @@ ${pageContent.slice(0, 10000)}` // Limit content to avoid token limits
 
 export function summaryToNodes(data) {
   const result = [
+    {
+      name: `Rating: ${data.rating.value} (${data.rating.reason})`
+    },
     {
       name: data.summary.oneLine,
       children: data.summary.details.map(detail => ({ name: detail }))
@@ -66,7 +72,8 @@ export function summaryToNodes(data) {
 }
 
 export function summaryToTanaPaste(data) {
-  let result = `- ${data.summary.oneLine}
+  let result = `- Rating: ${data.rating.value} (${data.rating.reason})
+- ${data.summary.oneLine}
 ${data.summary.details.map(detail => ` - ${detail}`).join('\n')}
 `;
 
