@@ -116,60 +116,87 @@ export async function createWebsite(externalId, { name, url }) {
   }
 }
 
-export async function createActivity(externalId, { name, url }) {
+export async function createActivity(externalId, { name, distance, date, url, elevation, moving_time, watts, heart_rate }) {
   return {
     externalId,
     name,
-    // supertags: [
-    //   {
-    //     /* Activity */
-    //     id: 'TODO'
-    //   },
-    // ],
-    // children: [
-    //    createUrl(item.url),
-    //    createSource(),
-    //   {
-    //     /* Name */
-    //     type: 'field',
-    //     attributeId: 'TODO',
-    //     children: [
-    //       {
-    //         name: activity.name,
-    //       }
-    //     ]
-    //   },
-    //   {
-    //     /* Distance */
-    //     type: 'field',
-    //     attributeId: 'TODO',
-    //     children: [
-    //       {
-    //         name: activity.distance,
-    //       }
-    //     ]
-    //   },
-    //   {
-    //     /* Moving Time */
-    //     type: 'field',
-    //     attributeId: 'TODO',
-    //     children: [
-    //       {
-    //         name: activity.moving_time,
-    //       }
-    //     ]
-    //   },
-    //   {
-    //     /* Start Date */
-    //     type: 'field',
-    //     attributeId: 'TODO',
-    //     children: [
-    //       {
-    //         name: activity.start_date,
-    //       }
-    //     ]
-    //   },
-    // ]
+    supertags: [
+      {
+        /* Activity */
+        id: 'X2iB4SHCm_Lz'
+      },
+    ],
+    children: [
+       createUrl(url),
+       createSource(),
+      {
+        /* Distance */
+        type: 'field',
+        attributeId: 'HLjYjL1bLZTG',
+        children: [
+          {
+            name: distance,
+          }
+        ]
+      },
+      {
+        /* When */
+        type: 'field',
+        attributeId: 'l4_Tr_0fV7rQ',
+        children: [
+          {
+            dataType: 'date',
+            name: date,
+          }
+        ]
+      },
+      {
+        /* Elevation */
+        type: 'field',
+        attributeId: 'j7foFAsn-bMh', 
+        children: [
+          {
+            name: elevation,
+          }
+        ]
+      },
+      {
+      /* Moving time */
+        type: 'field',
+        attributeId: 'nhpKOKoGwkqz',
+        children: [
+          {
+            name: moving_time,
+          }
+        ]
+      },
+      {
+        /* Cadence (min/km) */
+        type: 'field',
+        attributeId: 'L9W5kZLNPs2a',
+        children: [
+          {
+            name: cadence,
+          }
+        ],
+      },
+      {
+        /* Watts */
+        type: 'field',
+        attributeId: 'ssiKiq1m_VVk', 
+        children: [{
+          name: watts,
+        }]
+      },
+      {
+        /* Heart rate (bpm) */
+        type: 'field',
+        attributeId: 'qDBhxqnV9Nea',
+        children: [{
+          name: heart_rate,
+        }]
+      },
+    ]
   }
 }
 

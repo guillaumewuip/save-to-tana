@@ -43,9 +43,11 @@ async function processActivities() {
 
   try {
     const activities = await fetchRecentActivities(); 
-    const parsedActivities = Activity.parseActivities(activities);
+    const activitiesNodes = Activity.parseActivities(activities).map(Activity.toTanaNode);
 
-    console.log(parsedActivities);
+    console.log(activitiesNodes);
+
+    Tana.saveNodesToActivity(activitiesNodes);
   } catch (error) {
     Log.error('Error fetching Strava activities:', error.message);
   }

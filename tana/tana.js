@@ -70,7 +70,7 @@ const BATCH_SIZE = 100;
 const inboxQueue = []
 const activityQueue = []
 
-async function enqueue(queue, post) {
+async function enqueue(queue, post, saveNode = true) {
   if (queue.length) {
     Log.debug(`Posting ${Math.min(queue.length, BATCH_SIZE)} items to Tana with ${post.name}`);
     
@@ -81,8 +81,10 @@ async function enqueue(queue, post) {
       Log.debug(`${nonSavedNodes.length} not already saved. Posting...`);
 
       await post(nonSavedNodes)
-    
-      await Store.saveItemsSaved(nonSavedNodes.map(node => node.externalId))
+
+      if (saveNode) {
+        await Store.saveItemsSaved(nonSavedNodes.map(node => node.externalId))
+      }
     } catch (error) {
       Log.error('Error in saving items', error);
       // in case of failure, we put back items at the beginning of the queue
@@ -95,7 +97,7 @@ async function enqueue(queue, post) {
 setInterval(
   () => {
     enqueue(inboxQueue, postNodesToInbox);
-    enqueue(activityQueue, postNodesToActivity);
+    enqueue(activityQueue, postNodesToActivity, false);
   },
   20 * 1000
 );

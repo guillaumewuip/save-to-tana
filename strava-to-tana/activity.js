@@ -1,3 +1,4 @@
+import * as Tana from 'tana';
 import { z } from 'zod';
 
 const StravaActivitySchema = z.object({
@@ -24,3 +25,16 @@ export const parseActivities = (data) => {
 
   return result.data;
 };
+
+export const toTanaNode = (activity) => {
+  return Tana.Node.createActivity(activity.id, {
+    name: activity.name,
+    distance: activity.distance,
+    date: activity.start_date, 
+    url: `https://www.strava.com/activities/${activity.id}`,
+    elevation: activity.total_elevation_gain,
+    moving_time: activity.moving_time,
+    watts: activity.average_watts,
+    heart_rate: activity.average_heartrate,
+  })
+}
