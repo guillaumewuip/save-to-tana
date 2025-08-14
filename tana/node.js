@@ -119,7 +119,7 @@ export async function createWebsite(externalId, { name, url }) {
 export function createActivity(externalId, { name, distance, date, url, elevation, moving_time, watts, heart_rate, cadence }) {
   const node = {
     externalId,
-    name,
+    name: "",
     supertags: [
       {
         /* Activity */
@@ -129,16 +129,16 @@ export function createActivity(externalId, { name, distance, date, url, elevatio
     children: [
        createUrl(url),
        createSource(),
-      // {
-      //   /* Distance */
-      //   type: 'field',
-      //   attributeId: 'HLjYjL1bLZTG',
-      //   children: [
-      //     {
-      //       name: distance,
-      //     }
-      //   ]
-      // },
+       {
+          /* Name */
+          type: 'field',
+          attributeId: 'l4_Tr_0fV7rQ',
+          children: [
+            {
+              name,
+            }
+          ]
+       },
       // {
       //   /* When */
       //   type: 'field',
@@ -150,6 +150,17 @@ export function createActivity(externalId, { name, distance, date, url, elevatio
       //     }
       //   ]
       // },
+      // {
+      //   /* Distance */
+      //   type: 'field',
+      //   attributeId: 'HLjYjL1bLZTG',
+      //   children: [
+      //     {
+      //       name: distance,
+      //     }
+      //   ]
+      // },
+    
       // {
       //   /* Elevation */
       //   type: 'field',
