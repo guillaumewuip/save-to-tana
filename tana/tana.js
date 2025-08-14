@@ -73,9 +73,7 @@ const activityQueue = []
 async function enqueue(queue, post, saveNode = true) {
   if (queue.length) {
     Log.debug(`Posting ${Math.min(queue.length, BATCH_SIZE)} items to Tana with ${post.name}`);
-
-    console.log({queue})
-    
+        
     const nodes = queue.splice(0, BATCH_SIZE);
 
     try {
