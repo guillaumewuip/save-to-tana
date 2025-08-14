@@ -25,7 +25,7 @@ async function filterSavedNodes(nodes) {
   return newNodes
 }
 
-function postNodes(targetNodeId, nodes) {
+async function postNodesTo(targetNodeId, nodes) {
   const payload = {
     targetNodeId,
     nodes,
@@ -52,16 +52,16 @@ function postNodes(targetNodeId, nodes) {
     })
 }
 
-function postNodesToInbox(nodes) {
-  return postNodes('INBOX', nodes.map(node => 
+async function postNodesToInbox(nodes) {
+  return postNodesTo('INBOX', nodes.map(node => 
     Node.encode(Node.addSupertags(node, [
       'hNwXd-0aYDVj' // Inbox
     ]))
   ))
 }
 
-function postNodesToActivity(nodes) {
- return postNodes('TODO', nodes.map(node => 
+async function postNodesToActivity(nodes) {
+  return postNodesTo('Z_Kt8BKJ5Rrd', nodes.map(node => 
     Node.encode(node)
   ))
 }
