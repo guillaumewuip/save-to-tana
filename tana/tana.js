@@ -61,7 +61,6 @@ async function postNodesToInbox(nodes) {
 }
 
 async function postNodesToActivity(nodes) {
-  console.log({nodes})
   return postNodesTo('Z_Kt8BKJ5Rrd', nodes.map(node => 
     Node.encode(node)
   ))
@@ -74,6 +73,8 @@ const activityQueue = []
 async function enqueue(queue, post, saveNode = true) {
   if (queue.length) {
     Log.debug(`Posting ${Math.min(queue.length, BATCH_SIZE)} items to Tana with ${post.name}`);
+
+    console.log({queue})
     
     const nodes = queue.splice(0, BATCH_SIZE);
 
@@ -82,7 +83,9 @@ async function enqueue(queue, post, saveNode = true) {
       
       Log.debug(`${nonSavedNodes.length} new nodes to post`);
 
-      await post(nonSavedNodes)
+      if (nonSavedNodes.length > 0) {
+        await post(nonSavedNodes)
+      }
 
       if (saveNode) {
         await Store.saveItemsSaved(nonSavedNodes.map(node => node.externalId))
