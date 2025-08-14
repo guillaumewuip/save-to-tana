@@ -36,7 +36,7 @@ Analyze the provided webpage content and generate a concise, structured summary.
 4.  **Extract Key Information:**
     * Identify and list key takeaways in the actionItems array.
     * If specific individuals are named and are relevant to the content, list their names in the peopleMentioned array. If no one is mentioned, **DO NOT** include the peopleMentioned property in the output.
-5.  **Rate the Content:** Provide an overall rating for the content's quality (Excellent, Good, Average, Poor) by comparing it to other pages on similar topics. Explain the rating given.
+5.  **Rate the Content:** Provide an overall rating for the content's quality (Excellent, Good, Average, Poor) by comparing it to other pages on similar topics. Explain the rating given. Be honest and critical in your assessment.
 6.  **Language Consistency:** The entire JSON output, including all string values, must be in the same language as the original content.
 7.  **Formatting Rules:**
     * Ensure all string values in the JSON are properly escaped.
@@ -53,7 +53,12 @@ ${pageContent.slice(0, 10000)}` // Limit content to avoid token limits
 export function summaryToNodes(data) {
   const result = [
     {
-      name: `Rating: ${data.rating.value} (${data.rating.reason})`
+      name: `Rating: ${data.rating.value}`,
+      children: [
+        {
+          name: data.rating.reason
+        }
+      ]
     },
     {
       name: data.summary.oneLine,
@@ -72,7 +77,8 @@ export function summaryToNodes(data) {
 }
 
 export function summaryToTanaPaste(data) {
-  let result = `- Rating: ${data.rating.value} (${data.rating.reason})
+  let result = `- Rating: ${data.rating.value}
+  - ${data.rating.reason}
 - ${data.summary.oneLine}
 ${data.summary.details.map(detail => ` - ${detail}`).join('\n')}
 `;
