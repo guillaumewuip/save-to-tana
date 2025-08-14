@@ -42,7 +42,7 @@ export const toTanaNode = (activity) => {
     cadence: activity.average_cadence,
   }
 )
-console.log({ activity, node })
+console.log({ activity: JSON.stringify(activity), node: JSON.stringify(node) })
 
 return node
 }
