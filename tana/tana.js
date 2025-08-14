@@ -61,6 +61,7 @@ async function postNodesToInbox(nodes) {
 }
 
 async function postNodesToActivity(nodes) {
+  console.log({nodes})
   return postNodesTo('Z_Kt8BKJ5Rrd', nodes.map(node => 
     Node.encode(node)
   ))
@@ -79,7 +80,7 @@ async function enqueue(queue, post, saveNode = true) {
     try {
       const nonSavedNodes = await filterSavedNodes(nodes)
       
-      Log.debug(`${nonSavedNodes.length} not already saved. Posting...`);
+      Log.debug(`${nonSavedNodes.length} new nodes to post`);
 
       await post(nonSavedNodes)
 
