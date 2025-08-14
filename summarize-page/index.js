@@ -29,15 +29,15 @@ Analyze the provided webpage content and generate a concise, structured summary.
 # Instructions
 1.  **Analyze Content:** Read the entire content to understand its primary topic and purpose.
 2.  **Filter Noise:** Ignore any content that is not part of the main article or body, such as headers, footers, ads, and sidebars.
-3.  **Summarize:** Create a one-line summary (`oneLine`) and a more detailed summary (`details`).
+3.  **Summarize:** Create a one-line summary (oneLine) and a more detailed summary (details).
 4.  **Extract Key Information:**
-    * Identify and list key takeaways in the `actionItems` array.
-    * If specific individuals are named and are relevant to the content, list their names in the `peopleMentioned` array. If no one is mentioned, **DO NOT** include the `peopleMentioned` property in the output.
-5.  **Rate the Content:** Provide an overall `rating` for the content's quality (Excellent, Good, Average, Poor) by comparing it to other pages on similar topics.
-6.  **Language Consistency:** The entire JSON output, including all string values, must be in the same language as the original `WEBPAGE_CONTENT`.
+    * Identify and list key takeaways in the actionItems array.
+    * If specific individuals are named and are relevant to the content, list their names in the peopleMentioned array. If no one is mentioned, **DO NOT** include the peopleMentioned property in the output.
+5.  **Rate the Content:** Provide an overall rating for the content's quality (Excellent, Good, Average, Poor) by comparing it to other pages on similar topics.
+6.  **Language Consistency:** The entire JSON output, including all string values, must be in the same language as the original content.
 7.  **Formatting Rules:**
     * Ensure all string values in the JSON are properly escaped.
-    * The `oneLine` and `details` values must be single-line strings without any `\n` newline characters.
+    * The oneLine and details values must be single-line strings without any \n newline characters.
     * The final output must be a single, valid JSON object and nothing else. Do not include any explanatory text before or after the JSON.
 
 Webpage content to summarize:
