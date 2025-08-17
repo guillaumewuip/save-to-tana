@@ -1,6 +1,6 @@
 import * as Tana from 'tana';
 import { z } from 'zod';
-import { format } from 'date-fns'
+import { format, formatDuration } from 'date-fns'
 
 const StravaActivitySchema = z.object({
   id: z.number(),
