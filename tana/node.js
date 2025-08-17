@@ -170,7 +170,7 @@ export function createActivity(externalId, { name, type, distance, date, url, el
       attributeId: 'HLjYjL1bLZTG',
       children: [
         {
-          name: distance,
+          name: `${distance}`,
         }
       ]
     });
@@ -183,7 +183,7 @@ export function createActivity(externalId, { name, type, distance, date, url, el
       attributeId: 'j7foFAsn-bMh',
       children: [
         {
-          name: elevation,
+          name: `${elevation}`,
         }
       ]
     });
@@ -196,35 +196,37 @@ export function createActivity(externalId, { name, type, distance, date, url, el
       attributeId: 'nhpKOKoGwkqz',
       children: [
         {
-          name: moving_time,
+          name: `${moving_time}`,
         }
       ]
     });
   }
 
-  // if (cadence) { 
-  //   node.children.push({
-  //     /* Cadence (min/km) */
-  //     type: 'field',
-  //     attributeId: 'L9W5kZLNPs2a',
-  //     children: [
-  //       {
-  //         name: cadence,
-  //       }
-  //     ],
-  //   });
-  // }
+  if (cadence) { 
+    node.children.push({
+      /* Cadence (min/km) */
+      type: 'field',
+      attributeId: 'L9W5kZLNPs2a',
+      children: [
+        {
+          name: `${cadence}`,
+        }
+      ],
+    });
+  }
 
-  // if (watts) {
-  //   node.children.push({
-  //     /* Watts */
-  //     type: 'field',
-  //     attributeId: 'ssiKiq1m_VVk',
-  //     children: [{
-  //       name: watts,
-  //     }]
-  //   });
-  // }
+  if (watts) {
+    node.children.push({
+      /* Watts */
+      type: 'field',
+      attributeId: 'ssiKiq1m_VVk',
+      children: [
+        {
+          name: `${watts}`,
+        }
+      ]
+    });
+  }
 
   // if (heart_rate) {
   //   node.children.push({
