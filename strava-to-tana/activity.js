@@ -10,7 +10,7 @@ const StravaActivitySchema = z.object({
   distance: z.number().optional(),
   moving_time: z.number().optional(),
   total_elevation_gain: z.number().optional(),
-  average_cadence: z.number().optional(),
+  average_speed: z.number().optional(),
   average_watts: z.number().optional(),
   average_heartrate: z.number().optional(),
 });
@@ -28,13 +28,14 @@ export const parseActivities = (data) => {
 };
 
 export const toTanaNode = (activity) => {
-  
+  const cadence = activity.average_speed ? (16.6667 / activity.average_speed).toFixed(2) : undefined
+
   const node = Tana.Node.createActivity(
   `strava-${activity.id}`, 
     {
     name: activity.name,
     type: activity.sport_type,
-    distance: activity.distance * 100,
+    distance: activity.distance / 100,
     date: format(activity.start_date, 'yyyy-MM-dd HH:mm:ss'),
     url: `https://www.strava.com/activities/${activity.id}`,
     elevation: activity.total_elevation_gain,
@@ -44,7 +45,7 @@ export const toTanaNode = (activity) => {
     }), { format: ['hours', 'minutes', 'seconds'] }),
     watts: activity.average_watts,
     heart_rate: activity.average_heartrate,
-    cadence: activity.average_cadence,
+    cadence,
   }
 )
 console.log({ activity: JSON.stringify(activity), node: JSON.stringify(node) })
