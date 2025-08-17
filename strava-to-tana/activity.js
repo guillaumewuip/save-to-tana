@@ -1,11 +1,12 @@
 import * as Tana from 'tana';
 import { z } from 'zod';
+import { format } from 'date-fns'
 
 const StravaActivitySchema = z.object({
   id: z.number(),
   name: z.string(),
   sport_type: z.enum(['Run', 'TrailRun', 'Walk', 'GravelRide', 'Ride', 'WeightTraining']).catch('unknown'),
-  start_date: z.string().datetime(),
+  start_date_local: z.string().datetime(),
   distance: z.number().optional(),
   moving_time: z.number().optional(),
   total_elevation_gain: z.number().optional(),
@@ -33,11 +34,11 @@ export const toTanaNode = (activity) => {
     {
     name: activity.name,
     type: activity.sport_type,
-    distance: activity.distance,
-    date: activity.start_date, 
+    distance: activity.distance * 100,
+    date: format(activity.start_date_local, 'yyyy-MM-dd HH:mm:ss'),
     url: `https://www.strava.com/activities/${activity.id}`,
     elevation: activity.total_elevation_gain,
-    moving_time: activity.moving_time,
+    moving_time: formatDuration({ seconds: activity.moving_time }, { format: ['hours', 'minutes', 'seconds'] }),
     watts: activity.average_watts,
     heart_rate: activity.average_heartrate,
     cadence: activity.average_cadence,
