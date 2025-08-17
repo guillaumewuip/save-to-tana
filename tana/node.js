@@ -149,17 +149,17 @@ export function createActivity(externalId, { name, type, distance, date, url, el
             }
           ]
         }
-      // {
-      //   /* When */
-      //   type: 'field',
-      //   attributeId: 'l4_Tr_0fV7rQ',
-      //   children: [
-      //     {
-      //       dataType: 'date',
-      //       name: date,
-      //     }
-      //   ]
-      // },
+      {
+        /* When */
+        type: 'field',
+        attributeId: 'l4_Tr_0fV7rQ',
+        children: [
+          {
+            dataType: 'date',
+            name: date,
+          }
+        ]
+      },
     ]
   }
 
