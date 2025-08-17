@@ -127,28 +127,28 @@ export function createActivity(externalId, { name, type, distance, date, url, el
       },
     ],
     children: [
-       createUrl(url),
-       createSource(),
-       {
-          /* Name */
-          type: 'field',
-          attributeId: '_pT90vnYbeYl',
-          children: [
-            {
-              name,
-            }
-          ]
-       },
-       {
-          /* Type */
-          type: 'field',
-          attributeId: '8K01kQpk99Un',
-          children: [
-            {
-              name: type,
-            }
-          ]
-        }
+      createUrl(url),
+      createSource(),
+      {
+        /* Name */
+        type: 'field',
+        attributeId: '_pT90vnYbeYl',
+        children: [
+          {
+            name,
+          }
+        ]
+      },
+      {
+        /* Type */
+        type: 'field',
+        attributeId: '8K01kQpk99Un',
+        children: [
+          {
+            name: type,
+          }
+        ]
+      },
       {
         /* When */
         type: 'field',
