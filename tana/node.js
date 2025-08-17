@@ -228,16 +228,16 @@ export function createActivity(externalId, { name, type, distance, date, url, el
     });
   }
 
-  // if (heart_rate) {
-  //   node.children.push({
-  //     /* Heart rate (bpm) */
-  //     type: 'field',
-  //     attributeId: 'qDBhxqnV9Nea',
-  //     children: [{
-  //       name: heart_rate,
-  //     }]
-  //   });
-  // }
+  if (heart_rate) {
+    node.children.push({
+      /* Heart rate (bpm) */
+      type: 'field',
+      attributeId: 'qDBhxqnV9Nea',
+      children: [{
+        name: `${heart_rate}`,
+      }]
+    });
+  }
 
   return node
 }
