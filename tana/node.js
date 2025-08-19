@@ -116,7 +116,7 @@ export async function createWebsite(externalId, { name, url }) {
   }
 }
 
-export function createActivity(externalId, { name, type, distance, date, url, elevation, moving_time, watts, heart_rate, cadence }) {
+export function createSport(externalId, { name, type, distance, date, url, elevation, moving_time, watts, heart_rate, cadence }) {
   const node = {
     externalId,
     name: "",
@@ -162,22 +162,22 @@ export function createActivity(externalId, { name, type, distance, date, url, el
       },
       {
         /* Habit */
-        type: 'field';
-        attributeId: 'H0UhNSY2ZZrO';
+        type: 'field',
+        attributeId: 'H0UhNSY2ZZrO',
         children: [
           {
             name: 'e_4kiChH0Y8v'
           }
-        ];
+        ]
       },
       {
         /* Done */
-        type: 'field';
-        attributeId: '07ngCqKrZ7Cc';
+        type: 'field',
+        attributeId: '07ngCqKrZ7Cc',
         children: [{
-          dataType: 'boolean';
-          value: true;
-        }];
+          dataType: 'boolean',
+          value: true,
+        }]
       }
     ]
   }
