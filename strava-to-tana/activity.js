@@ -39,13 +39,13 @@ export const toTanaNode = (activity) => {
       date: format(activity.start_date, 'yyyy-MM-dd HH:mm:ss'),
       url: `https://www.strava.com/activities/${activity.id}`,
       elevation: activity.total_elevation_gain,
-      moving_time: format(activity.moving_time, 'HH:mm:ss'),
+      moving_time: format(activity.moving_time * 1000, 'HH:mm:ss'),
       watts: activity.average_watts,
       heart_rate: activity.average_heartrate,
       cadence,
     }
   )
-  
+
   console.log({ activity: JSON.stringify(activity), node: JSON.stringify(node) })
 
   return node
