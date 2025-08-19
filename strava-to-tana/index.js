@@ -69,9 +69,9 @@ async function start() {
 
     await processActivities();
 
-    cron.schedule('0 * * * *', () => {
+    cron.schedule('0 6-22/2 * * *', () => {
       console.log('Running scheduled task...');
-      //processActivities();  
+      processActivities();  
     });
   } catch (error) {
     Log.error('Failed to start server:', error.message);
