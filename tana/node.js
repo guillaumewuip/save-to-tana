@@ -167,7 +167,7 @@ export function createSport(externalId, { name, type, distance, date, url, eleva
         children: [
           {
             dataType: 'reference',
-            name: 'e_4kiChH0Y8v'
+            id: 'e_4kiChH0Y8v'
           }
         ]
       },
