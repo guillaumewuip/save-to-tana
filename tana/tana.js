@@ -66,7 +66,7 @@ async function postNodesToActivity(nodes) {
   ))
 }
 
-const BATCH_SIZE = 100;
+const BATCH_SIZE = 5;
 const inboxQueue = []
 const activityQueue = []
 
@@ -96,13 +96,13 @@ async function enqueue(queue, post, saveNode = true) {
   }
 }
 
-// every 20s, we post the queues
+// every 30s, we post the queues
 setInterval(
   () => {
     enqueue(inboxQueue, postNodesToInbox);
     enqueue(activityQueue, postNodesToActivity);
   },
-  20 * 1000
+  30 * 1000
 );
 
 export function saveNodesToInbox(nodes) {
