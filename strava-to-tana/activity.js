@@ -46,7 +46,5 @@ export const toTanaNode = (activity) => {
     }
   )
 
-  console.log({ activity: JSON.stringify(activity), node: JSON.stringify(node) })
-
   return node
 }
