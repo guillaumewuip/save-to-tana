@@ -117,18 +117,18 @@ export async function isAuthenticated() {
 export async function fetchRecentActivities() {
   const { access_token } = await refreshTokens();
 
-  //const fifteenDaysAgoTimestamp = Math.floor(new Date('2024-06-30').getTime() / 1000);  // first activity
-  const fifteenDaysAgoTimestamp = Math.floor(Date.now() / 1000) - 86400 * 15;
+  const after = Math.floor(new Date('2024-06-30').getTime() / 1000);  // timestamp first activity
+  //const after = Math.floor(Date.now() / 1000) - 86400 * 15; // timestamp 15 days before now
 
   let allActivities = [];
   let page = 1;
-  const per_page = 100;
+  const per_page = 50;
 
   while (true) {
-    Log.debug(`Fetching activities (page: ${page}, per_page: ${per_page})`);
+    Log.debug(`Fetching activities (after: ${after}, page: ${page}, per_page: ${per_page})`);
 
     const url = new URL('https://www.strava.com/api/v3/athlete/activities');
-    url.searchParams.append('after', fifteenDaysAgoTimestamp);
+    url.searchParams.append('after', after);
     url.searchParams.append('per_page', per_page);
     url.searchParams.append('page', page);
 
