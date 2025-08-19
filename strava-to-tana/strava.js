@@ -118,20 +118,38 @@ export async function fetchRecentActivities() {
   const { access_token } = await refreshTokens();
 
   const fifteenDaysAgoTimestamp = Math.floor(Date.now() / 1000) - 86400 * 15;
+  let allActivities = [];
+  let page = 1;
+  const per_page = 100;
 
-  const url = new URL('https://www.strava.com/api/v3/athlete/activities');
-  url.searchParams.append('after', fifteenDaysAgoTimestamp);
-  url.searchParams.append('per_page', 100);
+  while (true) {
+    Log.debug(`Fetching activities (page: ${page}, per_page: ${per_page})`);
 
-  const response = await fetch(url.toString(), {
-    headers: {
-      'Authorization': `Bearer ${access_token}`,
-    },
-  });
+    const url = new URL('https://www.strava.com/api/v3/athlete/activities');
+    url.searchParams.append('after', fifteenDaysAgoTimestamp);
+    url.searchParams.append('per_page', per_page);
+    url.searchParams.append('page', page);
 
-  if (!response.ok) {
-    throw new Error(`Failed to fetch Strava activities: ${response.status} ${response.statusText}`);
+    const response = await fetch(url.toString(), {
+      headers: {
+        'Authorization': `Bearer ${access_token}`,
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`Failed to fetch Strava activities: ${response.status} ${response.statusText}`);
+    }
+
+    const items = await response.json(); // array of activities
+
+    // Stop if we receive 0 items
+    if (items.length === 0) {
+      break;
+    }
+
+    allActivities.push(...items);
+    page++;
   }
 
-  return await response.json();
+  return allActivities;
 }
