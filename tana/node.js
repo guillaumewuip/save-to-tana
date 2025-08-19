@@ -160,6 +160,25 @@ export function createActivity(externalId, { name, type, distance, date, url, el
           }
         ]
       },
+      {
+        /* Habit */
+        type: 'field';
+        attributeId: 'H0UhNSY2ZZrO';
+        children: [
+          {
+            name: 'e_4kiChH0Y8v'
+          }
+        ];
+      },
+      {
+        /* Done */
+        type: 'field';
+        attributeId: '07ngCqKrZ7Cc';
+        children: [{
+          dataType: 'boolean';
+          value: true;
+        }];
+      }
     ]
   }
 
