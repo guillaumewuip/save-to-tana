@@ -117,7 +117,9 @@ export async function isAuthenticated() {
 export async function fetchRecentActivities() {
   const { access_token } = await refreshTokens();
 
+  //const fifteenDaysAgoTimestamp = Math.floor(new Date('2024-06-30').getTime() / 1000);  // first activity
   const fifteenDaysAgoTimestamp = Math.floor(Date.now() / 1000) - 86400 * 15;
+
   let allActivities = [];
   let page = 1;
   const per_page = 100;

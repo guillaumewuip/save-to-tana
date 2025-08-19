@@ -100,7 +100,7 @@ async function enqueue(queue, post, saveNode = true) {
 setInterval(
   () => {
     enqueue(inboxQueue, postNodesToInbox);
-    enqueue(activityQueue, postNodesToActivity, false);
+    enqueue(activityQueue, postNodesToActivity);
   },
   20 * 1000
 );
