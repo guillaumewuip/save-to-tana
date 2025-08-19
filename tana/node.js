@@ -166,19 +166,11 @@ export function createSport(externalId, { name, type, distance, date, url, eleva
         attributeId: 'H0UhNSY2ZZrO',
         children: [
           {
+            dataType: 'reference',
             name: 'e_4kiChH0Y8v'
           }
         ]
       },
-      {
-        /* Done */
-        type: 'field',
-        attributeId: '07ngCqKrZ7Cc',
-        children: [{
-          dataType: 'boolean',
-          value: true,
-        }]
-      }
     ]
   }
 
