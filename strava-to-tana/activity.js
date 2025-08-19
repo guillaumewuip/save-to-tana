@@ -31,24 +31,22 @@ export const toTanaNode = (activity) => {
   const cadence = activity.average_speed ? (16.6667 / activity.average_speed).toFixed(2) : undefined
 
   const node = Tana.Node.createActivity(
-  `strava-${activity.id}`, 
+    `strava-${activity.id}`, 
     {
-    name: activity.name,
-    type: activity.sport_type,
-    distance: activity.distance / 100,
-    date: format(activity.start_date, 'yyyy-MM-dd HH:mm:ss'),
-    url: `https://www.strava.com/activities/${activity.id}`,
-    elevation: activity.total_elevation_gain,
-    moving_time: formatDuration(intervalToDuration({
-      start: 0,
-      end: activity.moving_time * 1000// Convert seconds to milliseconds
-    }), { format: ['hours', 'minutes', 'seconds'] }),
-    watts: activity.average_watts,
-    heart_rate: activity.average_heartrate,
-    cadence,
-  }
-)
-console.log({ activity: JSON.stringify(activity), node: JSON.stringify(node) })
+      name: activity.name,
+      type: activity.sport_type,
+      distance: (activity.distance / 1000).toFixed(2),
+      date: format(activity.start_date, 'yyyy-MM-dd HH:mm:ss'),
+      url: `https://www.strava.com/activities/${activity.id}`,
+      elevation: activity.total_elevation_gain,
+      moving_time: format(activity.moving_time, 'HH:mm:ss'),
+      watts: activity.average_watts,
+      heart_rate: activity.average_heartrate,
+      cadence,
+    }
+  )
+  
+  console.log({ activity: JSON.stringify(activity), node: JSON.stringify(node) })
 
-return node
+  return node
 }
