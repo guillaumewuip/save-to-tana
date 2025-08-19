@@ -30,7 +30,7 @@ export const parseActivities = (data) => {
 export const toTanaNode = (activity) => {
   const cadence = activity.average_speed ? (16.6667 / activity.average_speed).toFixed(2) : undefined
 
-  const node = Tana.Node.createActivity(
+  const node = Tana.Node.createSport(
     `strava-${activity.id}`, 
     {
       name: activity.name,
