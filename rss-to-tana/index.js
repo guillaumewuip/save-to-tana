@@ -51,6 +51,11 @@ const rssFeeds = [
     cron: schedules.everyHour,
     createNode: Tana.Node.createWebsite,
   },
+  {
+    url: 'https://e18e.dev/blog.rss',
+    cron: schedules.twiceAtNight,
+    createNode: Tana.Node.createWebsite,
+  }
 ];
 
 function dateDiffInDays(a, b) {
