@@ -99,6 +99,15 @@
 
     const ld = lds[0]
 
+    if (!ld.author || !ld.name) {
+      return {
+        type: 'save_generic',
+        url: window.location.href,
+        title: document.title,
+        content,
+      };
+    }
+
     const artist = ld.author
       .replace(' - Topic', '')
       .trim()
