@@ -44,7 +44,7 @@ Based on the article's content, provide the following information:
 
 2.  **Rating**:
     * value: Critically evaluate the content against the rubric below and assign ONE rating: 'Excellent', 'Good', 'Average', or 'Poor'. **Assume a baseline of 'Average'** and only deviate if the content strongly merits it.
-    * reason: Justify your rating by explicitly referencing the rubric criteria. Point to specific aspects of the text (or their absence) that support your decision. What's missing to get an Excellent rating?
+    * reason: In ~30 words, justify your rating by explicitly referencing the rubric criteria. Point to specific aspects of the text (or their absence) that support your decision. What's missing to get an Excellent rating?
 
 3.  **People Mentioned**:
     * Identify and list the full names of any specific individuals mentioned in the text. If no people are named, this field should be empty.
