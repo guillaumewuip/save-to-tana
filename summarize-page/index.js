@@ -40,11 +40,11 @@ Based on the article's content, provide the following information:
 
 1.  **Summary**:
     * oneLine: Distill the absolute essence of the article into a single, compelling sentence.
-    * details: Extract a list of the key arguments, takeaways, findings or actionable items. Each item in the list should be a clear and concise point.
+    * details: Extract a list of the key arguments, takeaways, findings or actionable items. Each item in the list should be a clear and concise point..
 
 2.  **Rating**:
     * value: Critically evaluate the content against the rubric below and assign ONE rating: 'Excellent', 'Good', 'Average', or 'Poor'. **Assume a baseline of 'Average'** and only deviate if the content strongly merits it.
-    * reason: Justify your rating by explicitly referencing the rubric criteria. Point to specific aspects of the text (or their absence) that support your decision.
+    * reason: Justify your rating by explicitly referencing the rubric criteria. Point to specific aspects of the text (or their absence) that support your decision. What's missing to get an Excellent rating?
 
 3.  **People Mentioned**:
     * Identify and list the full names of any specific individuals mentioned in the text. If no people are named, this field should be empty.
