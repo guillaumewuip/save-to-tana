@@ -37,7 +37,7 @@ export const isSavedAlready = async (itemId) => {
 
 const saveItemSaved = async (itemId) => {
 	await client.set(storeId(itemId), 0, {
-		EX: 1296000, // 15 days in seconds
+		EX: 2596000, // 30 days in seconds
 		NX: true,
 	});
 };
