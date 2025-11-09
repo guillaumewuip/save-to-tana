@@ -18,7 +18,7 @@ client.on("connect", () => {});
 const storeId = (id) => {
 	// we hash the id to have something cleaner than raw url,
 	// and to be sure to use valid caracters
-	const hashedId = crypto.createHash("md5").update(id).digest("hex");
+	const hashedId = crypto.createHash("md5").update(id).digest("hex"); // TODO better to have readable keys to debug, and so move md5 down the stack if needed only
 
 	// change the prefix to trash all existing ids
 	// we can also connect to redis and flush the db
