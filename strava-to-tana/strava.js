@@ -129,8 +129,8 @@ export async function isAuthenticated() {
 export async function fetchRecentActivities() {
 	const { access_token } = await refreshTokens();
 
-	const after = Math.floor(new Date("2024-06-30").getTime() / 1000); // timestamp first activity
-	//const after = Math.floor(Date.now() / 1000) - 86400 * 15; // timestamp 15 days before now
+	//const after = Math.floor(new Date("2024-06-30").getTime() / 1000); // timestamp first activity
+	const after = Math.floor(Date.now() / 1000) - 86400 * 15; // timestamp 15 days before now
 
 	let allActivities = [];
 	let page = 1;
